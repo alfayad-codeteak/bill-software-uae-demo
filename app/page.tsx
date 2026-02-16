@@ -7,6 +7,7 @@ import { CustomerForm } from "@/components/billing/CustomerForm";
 import { InvoiceTable } from "@/components/billing/InvoiceTable";
 import { InvoiceSummary } from "@/components/billing/InvoiceSummary";
 import { InvoicePreviewModal } from "@/components/billing/InvoicePreviewModal";
+import { SharedBillPage } from "@/components/billing/SharedBillPage";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { db } from "@/lib/db";
 import { parseBillFromShareUrl } from "@/lib/utils";
@@ -116,6 +117,15 @@ function HomeContent() {
     return <SharedBillNotFound />;
   }
 
+  // When viewing a shared bill (e.g. from QR scan), show thermal print + Download PDF
+  if (viewMode) {
+    return (
+      <main className="min-h-screen w-screen bg-muted/20">
+        <SharedBillPage />
+      </main>
+    );
+  }
+
   return (
     <main className="h-screen w-screen overflow-hidden bg-gray-50/50">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full rounded-lg border">
@@ -135,11 +145,11 @@ function HomeContent() {
                   <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer Details</h3>
                   <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive h-7 text-xs">
-                      <RotateCcw className="w-3 h-3 mr-1" /> {viewMode ? "Exit View Mode" : "Reset"}
+                      <RotateCcw className="w-3 h-3 mr-1" /> Reset
                     </Button>
                   </div>
                 </div>
-                <div className={viewMode ? "pointer-events-none opacity-80" : ""}>
+                <div>
                   <CustomerForm />
                 </div>
               </div>
@@ -151,11 +161,11 @@ function HomeContent() {
               <div className="h-full flex flex-col min-h-0 bg-background">
                 <header className="px-6 py-3 border-b flex justify-between items-center bg-muted/20">
                   <div>
-                    <h2 className="text-lg font-bold tracking-tight">{viewMode ? "Viewing Shared Bill" : "Invoice Preview"}</h2>
-                    <p className="text-xs text-muted-foreground">{viewMode ? "Read-only mode" : `Draft mode • ${new Date().toLocaleDateString()}`}</p>
+                    <h2 className="text-lg font-bold tracking-tight">Invoice Preview</h2>
+                    <p className="text-xs text-muted-foreground">Draft mode • {new Date().toLocaleDateString()}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={handleSave} disabled={viewMode || items.length === 0}>
+                    <Button variant="outline" size="sm" onClick={handleSave} disabled={items.length === 0}>
                       <Save className="w-4 h-4 mr-2" /> Save
                     </Button>
 
@@ -177,7 +187,7 @@ function HomeContent() {
 
                 <div className="flex-1 overflow-y-auto p-6 scroll-smooth">
                   <div className="space-y-6">
-                    <section className={viewMode ? "pointer-events-none" : ""}>
+                    <section>
                       <InvoiceTable />
                     </section>
                     <section className="flex justify-end">
