@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { getShareableBillUrl } from "@/lib/utils";
+import { getShareableBillUrlWithData } from "@/lib/utils";
 
 export function BillHistory() {
     const { bills, loadBills, deleteBill } = useBillsStore();
@@ -73,12 +73,12 @@ export function BillHistory() {
                                     <DialogHeader>
                                         <DialogTitle>Share Bill</DialogTitle>
                                         <DialogDescription>
-                                            Anyone with this link can view this bill on this device.
+                                            Anyone with this link can view this bill on any device (e.g. scan QR on mobile).
                                         </DialogDescription>
                                     </DialogHeader>
                                     <div className="flex flex-col items-center justify-center p-6 space-y-4">
                                         <div className="bg-white p-4 rounded-xl shadow-sm border">
-                                            <QRCodeCanvas value={getShareableBillUrl(bill)} size={200} level="H" />
+                                            <QRCodeCanvas value={getShareableBillUrlWithData({ ...bill, date: new Date(bill.date) })} size={200} level="H" />
                                         </div>
                                         <div className="flex w-full items-center space-x-2">
                                             <div className="grid flex-1 gap-2">
@@ -87,12 +87,12 @@ export function BillHistory() {
                                                 </Label>
                                                 <Input
                                                     id="link"
-                                                    defaultValue={getShareableBillUrl(bill)}
+                                                    defaultValue={getShareableBillUrlWithData({ ...bill, date: new Date(bill.date) })}
                                                     readOnly
                                                     className="h-9"
                                                 />
                                             </div>
-                                            <Button type="submit" size="sm" className="px-3" onClick={() => handleCopyLink(getShareableBillUrl(bill))}>
+                                            <Button type="submit" size="sm" className="px-3" onClick={() => handleCopyLink(getShareableBillUrlWithData({ ...bill, date: new Date(bill.date) }))}>
                                                 <span className="sr-only">Copy</span>
                                                 <Eye className="h-4 w-4" />
                                             </Button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
-import { formatCurrency, getShareableBillUrl } from "@/lib/utils";
+import { formatCurrency, getShareableBillUrl, getShareableBillUrlWithData } from "@/lib/utils";
 import Barcode from "react-barcode";
 import { QRCodeCanvas } from "qrcode.react";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,16 @@ export function ReceiptPreview() {
     const subtotal = getSubtotal();
     const tax = getTotalTax();
     const total = getGrandTotal();
+
+    const shareBillUrl = items.length > 0 ? getShareableBillUrlWithData({
+        invoiceNumber,
+        date,
+        customer,
+        items,
+        subtotal,
+        tax,
+        total,
+    }) : "";
 
     return (
         <div className="w-full h-full flex justify-center p-8 bg-muted/20 overflow-y-auto">
@@ -135,7 +145,7 @@ export function ReceiptPreview() {
                         />
                     </div>
                     <div className="flex flex-col items-center">
-                        <QRCodeCanvas value={getShareableBillUrl({ invoiceNumber })} size={100} />
+                        <QRCodeCanvas value={shareBillUrl || getShareableBillUrl({ invoiceNumber })} size={100} />
                         <p className="text-[10px] text-gray-400 mt-2 text-center">Scan for digital receipt</p>
                     </div>
                 </div>

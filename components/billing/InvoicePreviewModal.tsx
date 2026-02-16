@@ -4,7 +4,7 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { useBillsStore } from "@/store/useBillsStore";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { formatCurrency, getShareableBillUrl } from "@/lib/utils";
+import { formatCurrency, getShareableBillUrlWithData } from "@/lib/utils";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { InvoicePDF } from "./InvoicePDF";
 import { Download, Eye } from "lucide-react";
@@ -79,10 +79,19 @@ export function InvoicePreviewModal() {
     const [barcodeUrl, setBarcodeUrl] = useState<string>("");
 
     useEffect(() => {
-        if (!invoiceNumber) return;
+        if (!invoiceNumber || items.length === 0) return;
 
-        // Generate QR Code (uses production base URL so scan always opens https://billsoftwareuae.vercel.app)
-        const shareUrl = getShareableBillUrl({ invoiceNumber });
+        // QR contains full bill in URL so it works when scanned on another device (e.g. mobile)
+        const bill = {
+            invoiceNumber,
+            date,
+            customer,
+            items,
+            subtotal: getSubtotal(),
+            tax: getTotalTax(),
+            total: getGrandTotal(),
+        };
+        const shareUrl = getShareableBillUrlWithData(bill);
         if (!shareUrl) return;
         import("qrcode").then((QRCode) => {
             QRCode.toDataURL(shareUrl, { width: 100, margin: 1 }, (err, url) => {
@@ -103,7 +112,7 @@ export function InvoicePreviewModal() {
             });
             setBarcodeUrl(canvas.toDataURL("image/png"));
         });
-    }, [invoiceNumber]);
+    }, [invoiceNumber, date, customer, items, getSubtotal, getTotalTax, getGrandTotal]);
 
     if (!isClient) return null; // Prevent hydration error for PDFDownloadLink
 

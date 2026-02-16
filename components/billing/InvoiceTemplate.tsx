@@ -1,7 +1,7 @@
 "use client";
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
-import { formatCurrency, getShareableBillUrl } from "@/lib/utils";
+import { formatCurrency, getShareableBillUrl, getShareableBillUrlWithData } from "@/lib/utils";
 import { QRCodeCanvas } from "qrcode.react";
 
 interface InvoiceTemplateProps {
@@ -14,6 +14,16 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
     const subtotal = getSubtotal();
     const tax = getTotalTax();
     const total = getGrandTotal();
+
+    const shareBillUrl = items.length > 0 ? getShareableBillUrlWithData({
+        invoiceNumber: invoiceId,
+        date,
+        customer,
+        items,
+        subtotal,
+        tax,
+        total,
+    }) : getShareableBillUrl({ invoiceNumber: invoiceId });
 
     return (
         <div className="w-full h-full flex flex-col bg-white overflow-y-auto">
@@ -39,7 +49,7 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
                         </p>
                     </div>
                     <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-100">
-                        <QRCodeCanvas value={getShareableBillUrl({ invoiceNumber: invoiceId })} size={80} />
+                        <QRCodeCanvas value={shareBillUrl} size={80} />
                     </div>
                 </div>
             </div>

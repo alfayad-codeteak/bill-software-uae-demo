@@ -9,6 +9,7 @@ import { InvoiceSummary } from "@/components/billing/InvoiceSummary";
 import { InvoicePreviewModal } from "@/components/billing/InvoicePreviewModal";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { db } from "@/lib/db";
+import { parseBillFromShareUrl } from "@/lib/utils";
 import { SharedBillNotFound } from "@/components/billing/SharedBillNotFound";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -45,8 +46,14 @@ function HomeContent() {
     if (viewId) {
       const loadSharedBill = async () => {
         try {
-          const bill = await db.bills.get(viewId);
-
+          let bill: Awaited<ReturnType<typeof db.bills.get>> = await db.bills.get(viewId);
+          if (!bill) {
+            const fromHash = parseBillFromShareUrl();
+            if (fromHash) {
+              await saveBill(fromHash);
+              bill = fromHash;
+            }
+          }
           if (bill) {
             loadInvoice(bill);
             toast.success("Loaded shared bill");
@@ -63,7 +70,7 @@ function HomeContent() {
       setViewMode(false);
       setNotFound(false);
     }
-  }, [searchParams, setViewMode, loadInvoice]);
+  }, [searchParams, setViewMode, loadInvoice, saveBill]);
 
   const handleReset = () => {
     if (viewMode) {
