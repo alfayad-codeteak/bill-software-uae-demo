@@ -1,14 +1,16 @@
 "use client";
 
 import { useInvoiceStore } from "@/store/useInvoiceStore";
+import { useBillsStore } from "@/store/useBillsStore";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getShareableBillUrl } from "@/lib/utils";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { InvoicePDF } from "./InvoicePDF";
 import { Download, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReceiptPreview } from "./ReceiptPreview";
@@ -20,6 +22,7 @@ const generateInvoiceId = () => `INV-${new Date().getFullYear()}-${Math.floor(10
 
 export function InvoicePreviewModal() {
     const { customer, items, getSubtotal, getTotalTax, getGrandTotal, viewMode, setViewMode, resetInvoice, invoiceNumber, date } = useInvoiceStore();
+    const { saveBill } = useBillsStore();
     const [internalOpen, setInternalOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
@@ -45,6 +48,25 @@ export function InvoicePreviewModal() {
         resetInvoice();
     };
 
+    const handlePreviewClick = async () => {
+        if (items.length === 0) {
+            toast.error("Add items before previewing");
+            return;
+        }
+        const bill = {
+            invoiceNumber,
+            date,
+            customer,
+            items,
+            subtotal: getSubtotal(),
+            tax: getTotalTax(),
+            total: getGrandTotal(),
+        };
+        await saveBill(bill);
+        toast.success("Bill saved");
+        setInternalOpen(true);
+    };
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -59,10 +81,11 @@ export function InvoicePreviewModal() {
     useEffect(() => {
         if (!invoiceNumber) return;
 
-        // Generate QR Code
+        // Generate QR Code (uses production base URL so scan always opens https://billsoftwareuae.vercel.app)
+        const shareUrl = getShareableBillUrl({ invoiceNumber });
+        if (!shareUrl) return;
         import("qrcode").then((QRCode) => {
-            const url = `https://billsoftware.ae/view/${invoiceNumber}`;
-            QRCode.toDataURL(url, { width: 100, margin: 1 }, (err, url) => {
+            QRCode.toDataURL(shareUrl, { width: 100, margin: 1 }, (err, url) => {
                 if (!err) setQrCodeUrl(url);
             });
         });
@@ -88,7 +111,7 @@ export function InvoicePreviewModal() {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             {!viewMode && (
                 <DialogTrigger asChild>
-                    <Button size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" onClick={() => setInternalOpen(true)}>
+                    <Button size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" onClick={handlePreviewClick}>
                         <Eye className="w-4 h-4 mr-2" /> Preview & Download Invoice
                     </Button>
                 </DialogTrigger>

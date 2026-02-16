@@ -14,10 +14,11 @@ export function formatCurrency(amount: number) {
   }).format(amount);
 }
 
+// Production base URL so QR codes and share links always point to the live app
+const BILL_APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://billsoftwareuae.vercel.app';
+
 export function getShareableBillUrl(bill: { invoiceNumber: string }): string {
-  if (typeof window === 'undefined') return '';
-  const baseUrl = window.location.origin;
-  return `${baseUrl}/?view=${encodeURIComponent(bill.invoiceNumber)}`;
+  return `${BILL_APP_BASE_URL}/?view=${encodeURIComponent(bill.invoiceNumber)}`;
 }
 
 export function getBillIdFromUrl(): string | null {
