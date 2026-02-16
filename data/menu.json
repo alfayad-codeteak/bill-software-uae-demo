@@ -1,0 +1,446 @@
+[
+    {
+        "name": "Beef Burger",
+        "category": "Burgers",
+        "price": 21,
+        "image": "https://www.certifiedirishangus.ie/wp-content/uploads/2019/11/TheUltimateBurgerwBacon_RecipePic.jpg"
+    },
+    {
+        "name": "Cheetos Burger",
+        "category": "Burgers",
+        "price": 25,
+        "image": "https://www.shutterstock.com/image-photo/spicy-cheetos-burger-melted-cheese-600nw-2518364877.jpg"
+    },
+    {
+        "name": "Double Burger",
+        "category": "Burgers",
+        "price": 26.25,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Chicken Fantasia",
+        "category": "Burgers",
+        "price": 17.85,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Zinger Double Burger",
+        "category": "Burgers",
+        "price": 17.5,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Khaleej Double Burger",
+        "category": "Burgers",
+        "price": 16.8,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Zinger Burger Special",
+        "category": "Burgers",
+        "price": 11.5,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Chicken Double Burger",
+        "category": "Burgers",
+        "price": 12.6,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Beef Double Burger",
+        "category": "Burgers",
+        "price": 12.6,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Zinger Lusty Burger",
+        "category": "Burgers",
+        "price": 16.8,
+        "image": "https://www.kitchensanctuary.com/wp-content/uploads/2021/05/Double-Cheeseburger-square-FS-42.jpg"
+    },
+    {
+        "name": "Zinger Combo",
+        "category": "Combos",
+        "price": 11.5,
+        "image": "https://img.freepik.com/premium-photo/chicken-zinger-burger-combo-with-oreo-milkshake_1315278-3.jpg?semt=ais_wordcount_boost&w=740&q=80"
+    },
+    {
+        "name": "Mathafi Combo",
+        "category": "Combos",
+        "price": 12.5,
+        "image": "https://images.hattafoodhub.com/insecure/fit/1000/1000/ce/0/plain/https://hatta-foodhub-assests.s3.me-central-1.amazonaws.com/be22d8/prods/F7AT027J5DwsvefpuaGcOgrNUVUTuRlZCSTspodn.jpg@webp"
+    },
+    {
+        "name": "Tikka Combo",
+        "category": "Combos",
+        "price": 13.65,
+        "image": "https://5.imimg.com/data5/YL/TC/GLADMIN-30154868/chicken-tikka-500x500.png"
+    },
+    {
+        "name": "Tandoori Combo",
+        "category": "Combos",
+        "price": 13.65,
+        "image": "https://media-assets.swiggy.com/swiggy/image/upload/f_auto,q_auto,fl_lossy/azhchp8aqbrow5hqrcgv"
+    },
+    {
+        "name": "Kabab Combo",
+        "category": "Combos",
+        "price": 11.5,
+        "image": "https://media-cdn.tripadvisor.com/media/photo-s/17/a6/e4/fc/reshmi-kabab-combo.jpg"
+    },
+    {
+        "name": "Cajun Combo",
+        "category": "Combos",
+        "price": 13.65,
+        "image": "https://popmenucloud.com/cdn-cgi/image/width%3D1200%2Cheight%3D1200%2Cfit%3Dscale-down%2Cformat%3Dauto%2Cquality%3D60/lwirjxyq/044b87f7-d28c-408b-be43-19cf556ba1d2.jpg"
+    },
+    {
+        "name": "Fish Fillet Combo",
+        "category": "Combos",
+        "price": 11.5,
+        "image": "https://www.thespruceeats.com/thmb/zt6YzhmYbuCEfMlVqt84oPuLKMg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/parmesan-baked-fish-3058409-hero-01-5c82869a46e0fb00017b309b.jpg"
+    },
+    {
+        "name": "Hotdog Combo",
+        "category": "Combos",
+        "price": 8.5,
+        "image": "https://img.freepik.com/free-photo/high-angle-delicious-hot-dog-fries_23-2149235977.jpg?semt=ais_user_personalization&w=740&q=80"
+    },
+    {
+        "name": "Mathafi Poratta",
+        "category": "Poratta Sandwich",
+        "price": 13.5,
+        "image": "https://images.deliveryhero.io/image/talabat/MenuItems/MATHAFI_PORATTA638247304797604316.jpg"
+    },
+    {
+        "name": "Cheetos Poratta",
+        "category": "Poratta Sandwich",
+        "price": 7.35,
+        "image": "https://images.deliveryhero.io/image/talabat/MenuItems/Gazi_signature_parat_637274196335700530.jpg"
+    },
+    {
+        "name": "Francisco Poratta",
+        "category": "Poratta Sandwich",
+        "price": 6,
+        "image": "https://i.ytimg.com/vi/tsEfDPrqlwc/maxresdefault.jpg"
+    },
+    {
+        "name": "Dal Poratta",
+        "category": "Poratta Sandwich",
+        "price": 4.2,
+        "image": "https://cdn1.foodviva.com/static-content/food-images/breakfast-recipes/dal-paratha/dal-paratha.jpg"
+    },
+    {
+        "name": "Keema Poratta",
+        "category": "Poratta Sandwich",
+        "price": 5,
+        "image": "https://www.licious.in/blog/wp-content/uploads/2020/04/shutterstock_83591092.jpg"
+    },
+    {
+        "name": "Tuna Poratta",
+        "category": "Poratta Sandwich",
+        "price": 5.25,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcd8iPzygJ5D5XRoW9aPW5t-kGzAgaibhciw&s"
+    },
+    {
+        "name": "Hotdog Poratta",
+        "category": "Poratta Sandwich",
+        "price": 5.25,
+        "image": "https://media-cdn.tripadvisor.com/media/photo-s/0e/de/1e/f2/paratha-hotdog.jpg"
+    },
+    {
+        "name": "Egg Poratta",
+        "category": "Poratta Sandwich",
+        "price": 5.25,
+        "image": "https://i.ytimg.com/vi/Z6D1bQDahAc/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAxoRKDxBo_qyVGluarU5TXDrsZ2g"
+    },
+    {
+        "name": "Chicken Chilli Poratta",
+        "category": "Poratta Sandwich",
+        "price": 5.25,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpzSMdT0HOPqR1g1XDpm2Bojs-EFdE1MkzGw&s"
+    },
+    {
+        "name": "Chicken Charcoal",
+        "category": "Grill",
+        "price": 39.9,
+        "image": "https://img.freepik.com/free-photo/baked-chicken-tabaka-with-spices_1220-4968.jpg?semt=ais_user_personalization&w=740&q=80"
+    },
+    {
+        "name": "Peri Peri Charcoal",
+        "category": "Grill",
+        "price": 43.05,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtaZW3yluMwFFo2V2T3SkkIHp-aRAfPtXCeQ&s"
+    },
+    {
+        "name": "Green Chilli Charcoal",
+        "category": "Grill",
+        "price": 43.05,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHo2dGkf_6TMFUo9lKLb9rwX38r68_e6aWxw&s"
+    },
+    {
+        "name": "Mix Grill",
+        "category": "Grill",
+        "price": 44.8,
+        "image": "https://img.freepik.com/free-photo/mixed-fried-meat-with-pomegranate-sauce_140725-3461.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    {
+        "name": "Chicken Tikka",
+        "category": "Grill",
+        "price": 25.2,
+        "image": "https://glebekitchen.com/wp-content/uploads/2016/12/chickentikkakebab.jpg"
+    },
+    {
+        "name": "Chicken Wings",
+        "category": "Grill",
+        "price": 25.2,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7oljatL_iF5yY7Zz6Lj8Z5TvcoXhtKa1K0w&s"
+    },
+    {
+        "name": "Chicken Kabab",
+        "category": "Grill",
+        "price": 25.2,
+        "image": "https://bonmasala.com/wp-content/uploads/2022/06/Chicken-65-recipe.webp"
+    },
+    {
+        "name": "Beef Kabab",
+        "category": "Grill",
+        "price": 25.2,
+        "image": "https://i.ytimg.com/vi/8M-tuQVpBwc/maxresdefault.jpg"
+    },
+    {
+        "name": "Cheesy Fries Chicken",
+        "category": "Fries & Sides",
+        "price": 21,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOlX8VA-XCaBGUVFc0LLAQE4dzgeexwDNHPA&s"
+    },
+    {
+        "name": "Cheesy Fries with Cheetos",
+        "category": "Fries & Sides",
+        "price": 21,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzoZ2XpDVogbA__FA73ibI7jZUVG_Q3ksaaQ&s"
+    },
+    {
+        "name": "Cheesy Spicy Fries",
+        "category": "Fries & Sides",
+        "price": 18.9,
+        "image": "https://media.istockphoto.com/id/865939256/photo/spicy-chili-cheese-fries.jpg?s=612x612&w=0&k=20&c=vpUh1eDtuHV2Fl-dvasc_gvzIWlXgfFYZSKqm7br7MY="
+    },
+    {
+        "name": "Cheesy Fries with Vegetable",
+        "category": "Fries & Sides",
+        "price": 18.9,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-x_nUneeCQJq7i5bWg4HzU22pRKrjoMinPQ&s"
+    },
+    {
+        "name": "Potato Wedges Cheese",
+        "category": "Fries & Sides",
+        "price": 18.9,
+        "image": "https://static.toiimg.com/thumb/60055797.cms?imgsize=638855&width=800&height=800"
+    },
+    {
+        "name": "Mozzarella Stick",
+        "category": "Fries & Sides",
+        "price": 15.75,
+        "image": "https://www.onionringsandthings.com/wp-content/uploads/2018/07/homemade-mozzarella-sticks-with-marinara-sauce-7.jpg"
+    },
+    {
+        "name": "Chicken Popcorn",
+        "category": "Fries & Sides",
+        "price": 16.8,
+        "image": "https://www.licious.in/blog/wp-content/uploads/2020/12/Popcorn-Chicken.jpg"
+    },
+    {
+        "name": "Fruit Salad",
+        "category": "Desserts",
+        "price": 15.75,
+        "image": "https://www.meatloafandmelodrama.com/wp-content/uploads/2023/04/tropical-fruit-salad-square-500x500.jpeg"
+    },
+    {
+        "name": "Fruit Salad with Ice Cream",
+        "category": "Desserts",
+        "price": 16.8,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx9oIsy3tZ_LJvHf9k3rv54B4UzhAkg5EQsQ&s"
+    },
+    {
+        "name": "Mango Falooda",
+        "category": "Desserts",
+        "price": 19.95,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShm18XRPPL0akUwVBEgayfQ4d-3I70vFFwwg&s"
+    },
+    {
+        "name": "Royal Falooda",
+        "category": "Desserts",
+        "price": 19.95,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7oV7glQZHt89xQoEazmKE2ElSfUYwPOLoyw&s"
+    },
+    {
+        "name": "Snickers Crush Milk",
+        "category": "Milkshakes",
+        "price": 15.75,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPHAKfSHcgPOrQ7j14hdbKv9VqXJDgfOZTZg&s"
+    },
+    {
+        "name": "Galaxy Crush Milk",
+        "category": "Milkshakes",
+        "price": 15.75,
+        "image": "https://png.pngtree.com/thumb_back/fh260/background/20231005/pngtree-delicious-vanilla-milkshake-with-chocolate-garnish-on-a-elegant-white-texture-image_13609255.png"
+    },
+    {
+        "name": "Kitkat Crush Milk",
+        "category": "Milkshakes",
+        "price": 15.75,
+        "image": "https://www.coffeesphere.com/wp-content/uploads/2021/01/Kit-Kat-Coffee-Milkshake-683x1024.jpg"
+    },
+    {
+        "name": "Oreo Crush Milk",
+        "category": "Milkshakes",
+        "price": 15.75,
+        "image": "https://tastesbetterfromscratch.com/wp-content/uploads/2024/06/Oreo-Milkshake24-1.jpg"
+    },
+    {
+        "name": "Vanilla Milkshake",
+        "category": "Milkshakes",
+        "price": 13.65,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZMtxdCVsACvnqm3G49HzyMNdp9tRL1P2EdA&s"
+    },
+    {
+        "name": "Chocolate Milkshake",
+        "category": "Milkshakes",
+        "price": 13.65,
+        "image": "https://cookilicious.com/wp-content/uploads/2025/01/Brownie-Milkshake-Recipe-20-scaled.jpg"
+    },
+    {
+        "name": "Strawberry Milkshake",
+        "category": "Milkshakes",
+        "price": 13.65,
+        "image": "https://assets.epicurious.com/photos/647df8cad9749492c4d5d407/1:1/w_4506,h_4506,c_limit/StrawberryMilkshake_RECIPE_053123_3599.jpg"
+    },
+    {
+        "name": "Mango Milkshake",
+        "category": "Milkshakes",
+        "price": 13.65,
+        "image": "https://tastyoven.com/wp-content/uploads/2022/06/mango-shake-image.jpeg"
+    },
+    {
+        "name": "Vegetable Samosa",
+        "category": "Samosa",
+        "price": 1,
+        "image": "https://cookingwithparita.com/wp-content/uploads/2022/04/F4A6412.jpg"
+    },
+    {
+        "name": "Chicken Samosa",
+        "category": "Samosa",
+        "price": 1.5,
+        "image": "https://www.whiskaffair.com/wp-content/uploads/2014/07/Chicken-Samosa-1-3.jpg"
+    },
+    {
+        "name": "Beef Samosa",
+        "category": "Samosa",
+        "price": 5,
+        "image": "https://www.allrecipes.com/thmb/nKyhKSQNe3cWKPlDnV3LvyYgrDI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/609167-fcde3d214a3b4ee49eaf679ad46198d1.jpg"
+    },
+    {
+        "name": "Fresh Milk Tea",
+        "category": "Tea & Coffee",
+        "price": 4,
+        "image": "https://uzhavarbumi.s3.ap-south-1.amazonaws.com/uploads/at0X3L3commbLfoPRoWCfccwwGPT5RDmmGWkaxmb.jpg"
+    },
+    {
+        "name": "Tea Karak",
+        "category": "Tea & Coffee",
+        "price": 2.5,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2B_TUER7hrhuM6hHIo5eL4MqmVwg18Oe3Lg&s"
+    },
+    {
+        "name": "Coffee",
+        "category": "Tea & Coffee",
+        "price": 4,
+        "image": "https://img.freepik.com/free-photo/top-view-hot-espresso-with-brown-coffee-seeds-brown-wooden-desk-coffee-cup-drink_140725-28168.jpg?semt=ais_wordcount_boost&w=740&q=80"
+    },
+    {
+        "name": "Turkish Coffee",
+        "category": "Tea & Coffee",
+        "price": 6,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxTBHM_a9efJ0SYY4ezh_gaWmP0KMBKls1XA&s"
+    },
+    {
+        "name": "Pineapple Juice",
+        "category": "Fresh Juice",
+        "price": 10.5,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbUzK6Sj_FucT7HVWy72slD5jGdgeRwHpLyA&s"
+    },
+    {
+        "name": "Mango Juice",
+        "category": "Fresh Juice",
+        "price": 10.5,
+        "image": "https://t3.ftcdn.net/jpg/01/87/65/02/360_F_187650225_yiZwjK4HjPVxlD8npzCRUuaoodF39Kby.jpg"
+    },
+    {
+        "name": "Strawberry Juice",
+        "category": "Fresh Juice",
+        "price": 10.5,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRthJbXeeXkwo7E4pF35uryaHpUgMH1T6yvtw&s"
+    },
+    {
+        "name": "Watermelon Juice",
+        "category": "Fresh Juice",
+        "price": 10.5,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNtEEZay4hN1n1TYG-uv0aINQDbt9ycNDnKg&s"
+    },
+    {
+        "name": "Avocado Juice",
+        "category": "Fresh Juice",
+        "price": 10.5,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4RDJ2mAhICZYMAH2nqXsr5mkd3KwbqA_R7w&s"
+    },
+    {
+        "name": "Blackberry Mojito",
+        "category": "Mojito",
+        "price": 15.75,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2vZmSyU9ZO0NyKJDiMh7dzsVhaMqieMRvwA&s"
+    },
+    {
+        "name": "Blue Sky Mojito",
+        "category": "Mojito",
+        "price": 15.75,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_0QAT645fifw_1o45H2zBa980BWIRNk3ydQ&s"
+    },
+    {
+        "name": "Lemon Mint Mojito",
+        "category": "Mojito",
+        "price": 15.75,
+        "image": "https://cdn.loveandlemons.com/wp-content/uploads/2020/07/mojito.jpg"
+    },
+    {
+        "name": "Strawberry Mojito",
+        "category": "Mojito",
+        "price": 15.75,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ34xNwkAkg8JCgLM97tVlhbNhZc_WMwQoXgw&s"
+    },
+    {
+        "name": "Roob Strawberry",
+        "category": "Roob Special",
+        "price": 13.65,
+        "image": "https://st5.depositphotos.com/10614052/65855/i/450/depositphotos_658552570-stock-photo-mason-jar-tasty-strawberry-juice.jpg"
+    },
+    {
+        "name": "Roob Ruman",
+        "category": "Roob Special",
+        "price": 13.65,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzQVi4G5ASogjCFz6brhf3ICHkfVnwE5JVQg&s"
+    },
+    {
+        "name": "Roob Mango",
+        "category": "Roob Special",
+        "price": 13.65,
+        "image": "https://images.deliveryhero.io/image/talabat/MenuItems/Roob_Mango_638239591215339188.jpg"
+    },
+    {
+        "name": "Roob Grape",
+        "category": "Roob Special",
+        "price": 13.65,
+        "image": "https://static.wixstatic.com/media/943d2f_d23a64fbd3a34dedbd88c5aa7c21c0cc~mv2.jpg/v1/fill/w_520,h_578,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/943d2f_d23a64fbd3a34dedbd88c5aa7c21c0cc~mv2.jpg"
+    }
+]
