@@ -197,7 +197,7 @@ function HomeContent() {
             </div>
           </TabsContent>
           <TabsContent value="bill" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
-            <div className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
+            <div className="flex-1 overflow-y-auto min-h-0 overscroll-contain pb-[88px]">
               <div className="p-4 space-y-6 pb-4">
                 <section className="bg-card rounded-lg border p-4">
                   <div className="flex items-center justify-between mb-3">
@@ -216,7 +216,7 @@ function HomeContent() {
                 </section>
               </div>
             </div>
-            <footer className="shrink-0 p-4 pt-3 border-t bg-background">
+            <footer className="fixed bottom-0 left-0 right-0 p-4 pt-3 border-t bg-background z-10 md:relative md:bottom-auto md:left-auto md:right-auto">
               <InvoicePreviewModal />
             </footer>
           </TabsContent>
