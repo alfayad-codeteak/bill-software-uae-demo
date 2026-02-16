@@ -34,6 +34,28 @@ function HomeContent() {
   const [isClient, setIsClient] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"catalog" | "bill">("catalog");
+
+  // Swipe gesture: track touch start X for mobile tab switch
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const SWIPE_THRESHOLD = 60;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX == null) return;
+    const endX = e.changedTouches[0].clientX;
+    const delta = endX - touchStartX;
+    if (Math.abs(delta) < SWIPE_THRESHOLD) return;
+    if (delta < 0) {
+      setMobileTab("bill");
+    } else {
+      setMobileTab("catalog");
+    }
+    setTouchStartX(null);
+  };
 
   const handleOpenSavedBill = (bill: Bill) => {
     const normalizedBill: Bill = {
@@ -184,42 +206,49 @@ function HomeContent() {
             </Button>
           </div>
         </header>
-        <Tabs defaultValue="catalog" className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as "catalog" | "bill")} className="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div className="shrink-0 px-4 pt-3 pb-2 border-b bg-muted/20">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="catalog" className="touch-manipulation">Catalog</TabsTrigger>
               <TabsTrigger value="bill" className="touch-manipulation">Bill</TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value="catalog" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
-            <div className="flex-1 overflow-y-auto min-h-0">
-              <ProductCatalog />
-            </div>
-          </TabsContent>
-          <TabsContent value="bill" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
-            <div className="flex-1 overflow-y-auto min-h-0 overscroll-contain pb-[88px]">
-              <div className="p-4 space-y-6 pb-4">
-                <section className="bg-card rounded-lg border p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer</h3>
-                    <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive text-xs min-h-9">
-                      <RotateCcw className="w-3 h-3 mr-1" /> Reset
-                    </Button>
-                  </div>
-                  <CustomerForm />
-                </section>
-                <section>
-                  <InvoiceTable />
-                </section>
-                <section>
-                  <InvoiceSummary />
-                </section>
+          <div
+            className="flex-1 flex flex-col min-h-0 overflow-hidden touch-pan-y"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <TabsContent value="catalog" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
+              <div className="flex-1 overflow-y-auto min-h-0">
+                <ProductCatalog />
               </div>
-            </div>
-            <footer className="fixed bottom-0 left-0 right-0 p-4 pt-3 border-t bg-background z-10 md:relative md:bottom-auto md:left-auto md:right-auto">
-              <InvoicePreviewModal />
-            </footer>
-          </TabsContent>
+            </TabsContent>
+            <TabsContent value="bill" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
+              <div className="flex-1 overflow-y-auto min-h-0 overscroll-contain pb-32">
+                <div className="p-4 space-y-6">
+                  <section className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer</h3>
+                      <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive text-xs min-h-9">
+                        <RotateCcw className="w-3 h-3 mr-1" /> Reset
+                      </Button>
+                    </div>
+                    <CustomerForm />
+                  </section>
+                  <section>
+                    <InvoiceTable />
+                  </section>
+                  <section>
+                    <InvoiceSummary />
+                  </section>
+                  <div className="h-24 shrink-0" aria-hidden />
+                </div>
+              </div>
+              <footer className="fixed bottom-0 left-0 right-0 p-4 pt-3 border-t bg-background z-10 md:relative md:bottom-auto md:left-auto md:right-auto">
+                <InvoicePreviewModal />
+              </footer>
+            </TabsContent>
+          </div>
         </Tabs>
       </div>
 
