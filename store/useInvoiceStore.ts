@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { v4 as uuidv4 } from 'uuid'; // We need uuid, I'll add it to deps or use crypto.randomUUID
+
 import { Customer, InvoiceItem, Product, InvoiceState } from '@/lib/types';
 
 // Use crypto.randomUUID if available, else a simplefallback
