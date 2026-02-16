@@ -5,6 +5,7 @@ import { useBillsStore } from "@/store/useBillsStore";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, getShareableBillUrl } from "@/lib/utils";
+import { sendOrderToYaadro } from "@/lib/yaadro";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { InvoicePDF } from "./InvoicePDF";
 import { Download, Eye } from "lucide-react";
@@ -48,23 +49,32 @@ export function InvoicePreviewModal() {
         resetInvoice();
     };
 
+    const getCurrentBill = () => ({
+        invoiceNumber,
+        date,
+        customer,
+        items,
+        subtotal: getSubtotal(),
+        tax: getTotalTax(),
+        total: getGrandTotal(),
+    });
+
     const handlePreviewClick = async () => {
         if (items.length === 0) {
             toast.error("Add items before previewing");
             return;
         }
-        const bill = {
-            invoiceNumber,
-            date,
-            customer,
-            items,
-            subtotal: getSubtotal(),
-            tax: getTotalTax(),
-            total: getGrandTotal(),
-        };
+        const bill = getCurrentBill();
         await saveBill(bill);
         toast.success("Bill saved");
         setInternalOpen(true);
+    };
+
+    const handleDownloadPdf = async () => {
+        const bill = getCurrentBill();
+        const result = await sendOrderToYaadro(bill);
+        if (result.ok) toast.success("Order sent to Yaadro");
+        else if (result.error && !result.error.includes("not configured")) toast.error("Yaadro: " + result.error);
     };
 
     useEffect(() => {
@@ -164,7 +174,7 @@ export function InvoicePreviewModal() {
                             fileName={`Invoice-${invoiceNumber}.pdf`}
                         >
                             {({ loading }) => (
-                                <Button disabled={loading || items.length === 0}>
+                                <Button disabled={loading || items.length === 0} onClick={handleDownloadPdf}>
                                     <Download className="w-4 h-4 mr-2" />
                                     {loading ? 'Generating PDF...' : 'Download PDF'}
                                 </Button>

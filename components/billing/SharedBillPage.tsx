@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getShareableBillUrl } from "@/lib/utils";
+import { sendOrderToYaadro } from "@/lib/yaadro";
+import { toast } from "sonner";
 
 export function SharedBillPage() {
     const { customer, items, invoiceNumber, date, getSubtotal, getTotalTax, getGrandTotal } = useInvoiceStore();
@@ -43,6 +45,21 @@ export function SharedBillPage() {
         });
     }, [invoiceNumber]);
 
+    const handleDownloadPdf = async () => {
+        const bill = {
+            invoiceNumber,
+            date,
+            customer,
+            items,
+            subtotal: getSubtotal(),
+            tax: getTotalTax(),
+            total: getGrandTotal(),
+        };
+        const result = await sendOrderToYaadro(bill);
+        if (result.ok) toast.success("Order sent to Yaadro");
+        else if (result.error && !result.error.includes("not configured")) toast.error("Yaadro: " + result.error);
+    };
+
     if (!isClient) return null;
 
     return (
@@ -63,7 +80,7 @@ export function SharedBillPage() {
                     fileName={`Invoice-${invoiceNumber}.pdf`}
                 >
                     {({ loading }) => (
-                        <Button disabled={loading || items.length === 0} size="lg">
+                        <Button disabled={loading || items.length === 0} size="lg" onClick={handleDownloadPdf}>
                             <Download className="w-4 h-4 mr-2" />
                             {loading ? "Generating PDF…" : "Download PDF"}
                         </Button>
