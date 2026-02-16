@@ -50,6 +50,25 @@ export function CustomerForm() {
 
     const phoneValue = form.watch("phone");
 
+    // When store customer is updated externally (e.g. Edit saved bill), reset form to show loaded details
+    useEffect(() => {
+        const current = form.getValues();
+        const fromStore = {
+            name: customer.name ?? "",
+            email: customer.email ?? "",
+            phone: customer.phone ?? "",
+            address: customer.address ?? "",
+        };
+        if (
+            current.name !== fromStore.name ||
+            current.email !== fromStore.email ||
+            current.phone !== fromStore.phone ||
+            current.address !== fromStore.address
+        ) {
+            form.reset(fromStore);
+        }
+    }, [customer.name, customer.email, customer.phone, customer.address]);
+
     // Sync form with store on change
     useEffect(() => {
         const subscription = form.watch((value) => {

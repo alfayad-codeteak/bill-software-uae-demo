@@ -255,7 +255,7 @@ function HomeContent() {
   }
 
   return (
-    <main className="h-screen w-screen overflow-hidden bg-gray-50/50 min-h-0">
+    <main className="h-screen w-screen overflow-hidden bg-background min-h-0">
       {/* Mobile: tabs for Catalog | Bill */}
       <div className="flex flex-col h-full w-full md:hidden overflow-hidden">
         <header className="shrink-0 px-4 py-3 border-b flex justify-between items-center bg-background gap-2">
