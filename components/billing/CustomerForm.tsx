@@ -9,11 +9,29 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect } from "react";
 
+/** UAE mobile: exactly 9 digits, starting with 5 (e.g. 501234567). Used for Yaadro. */
+export const UAE_PHONE_REGEX = /^5\d{8}$/;
+export function normalizeUaePhone(value: string): string {
+    const digits = (value || "").replace(/\D/g, "");
+    return digits;
+}
+export function isValidUaePhone(value: string): boolean {
+    if (!value || typeof value !== "string") return false;
+    const digits = normalizeUaePhone(value);
+    return digits.length === 9 && UAE_PHONE_REGEX.test(digits);
+}
+
 const customerSchema = z.object({
     name: z.string().min(2, "Name is required"),
     email: z.string().email("Invalid email").optional().or(z.literal('')),
-    phone: z.string().min(10, "Phone number must be at least 10 digits").optional().or(z.literal('')),
-    gstin: z.string().optional(),
+    phone: z
+        .string()
+        .optional()
+        .or(z.literal(''))
+        .refine(
+            (val) => !val || isValidUaePhone(val),
+            { message: "Must be 9-digit UAE mobile starting with 5 (e.g. 501234567)" }
+        ),
     address: z.string().optional(),
 });
 
@@ -28,10 +46,9 @@ export function CustomerForm() {
         mode: "onBlur"
     });
 
-    // Sync form with store on change
-    // Alternatively, can use useForm's watch and useEffect
-    const watchedValues = form.watch();
+    const phoneValue = form.watch("phone");
 
+    // Sync form with store on change
     useEffect(() => {
         const subscription = form.watch((value) => {
             setCustomer(value as Partial<CustomerFormValues>);
@@ -39,39 +56,59 @@ export function CustomerForm() {
         return () => subscription.unsubscribe();
     }, [form.watch, setCustomer]);
 
+    // Live validation for phone (Yaadro): re-validate when phone changes
+    useEffect(() => {
+        if (phoneValue !== undefined && phoneValue !== "") {
+            form.trigger("phone");
+        }
+    }, [phoneValue]);
+
     return (
-        <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="name">Customer Name *</Label>
-                    <Input
-                        id="name"
-                        placeholder="Business or Person Name"
-                        {...form.register("name")}
-                        className={form.formState.errors.name ? "border-red-500" : ""}
-                    />
-                    {form.formState.errors.name && <span className="text-xs text-red-500">{form.formState.errors.name.message}</span>}
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" placeholder="+91 98765 43210" {...form.register("phone")} />
-                </div>
+        <div className="space-y-5">
+            <div className="space-y-2">
+                <Label htmlFor="name">Customer Name *</Label>
+                <Input
+                    id="name"
+                    placeholder="Business or Person Name"
+                    {...form.register("name")}
+                    className={form.formState.errors.name ? "border-red-500" : ""}
+                />
+                {form.formState.errors.name && (
+                    <p className="text-xs text-red-500">{form.formState.errors.name.message}</p>
+                )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="billing@company.com" {...form.register("email")} />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="gstin">TRN (Optional)</Label>
-                    <Input id="gstin" placeholder="1002..." {...form.register("gstin")} />
-                </div>
+            <div className="space-y-2">
+                <Label htmlFor="phone">Phone (required for Yaadro)</Label>
+                <Input
+                    id="phone"
+                    placeholder="501234567 (UAE 9 digits)"
+                    {...form.register("phone")}
+                    className={form.formState.errors.phone ? "border-red-500" : ""}
+                />
+                {form.formState.errors.phone ? (
+                    <p className="text-xs text-red-500">{form.formState.errors.phone.message}</p>
+                ) : (
+                    <p className="text-xs text-muted-foreground">UAE mobile: 9 digits starting with 5</p>
+                )}
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="billing@company.com" {...form.register("email")} />
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="address">Billing Address</Label>
-                <Input id="address" placeholder="Street, City, State, Zip" {...form.register("address")} />
+                <Input
+                    id="address"
+                    placeholder="Street, City, State, Zip"
+                    {...form.register("address")}
+                    className={form.formState.errors.address ? "border-red-500" : ""}
+                />
+                {form.formState.errors.address && (
+                    <p className="text-xs text-red-500">{form.formState.errors.address.message}</p>
+                )}
             </div>
         </div>
     );

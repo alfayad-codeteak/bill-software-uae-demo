@@ -16,7 +16,7 @@ export function InvoiceSummary() {
 
     return (
         <Card className="bg-muted/30">
-            <CardContent className="p-6 space-y-3">
+            <CardContent className="p-4 sm:p-6 space-y-3">
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>{formatCurrency(subtotal)}</span>

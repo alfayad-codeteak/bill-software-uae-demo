@@ -1,6 +1,21 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
-import type { Bill } from "@/lib/types";
+import type { Bill, InvoiceItem } from "@/lib/types";
+
+function normalizeItems(items: unknown): InvoiceItem[] {
+  if (!Array.isArray(items)) return [];
+  return items.map((row: Record<string, unknown>) => ({
+    id: String(row?.id ?? ""),
+    productId: String(row?.productId ?? ""),
+    name: String(row?.name ?? ""),
+    qty: Number(row?.qty) || 0,
+    unit: String(row?.unit ?? ""),
+    rate: Number(row?.rate) || 0,
+    gstRate: Number(row?.gstRate) ?? 0,
+    amount: Number(row?.amount) || 0,
+    gstAmount: Number(row?.gstAmount) || 0,
+  }));
+}
 
 export async function GET(
   _request: Request,
@@ -35,11 +50,12 @@ export async function GET(
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    const rawItems = data.items ?? [];
     const bill: Bill = {
       invoiceNumber: data.invoice_number,
       date: new Date(data.date),
-      customer: data.customer,
-      items: data.items,
+      customer: data.customer ?? { name: "", email: "", phone: "", address: "" },
+      items: normalizeItems(rawItems),
       subtotal: Number(data.subtotal),
       tax: Number(data.tax),
       total: Number(data.total),

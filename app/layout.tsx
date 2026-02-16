@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description: "Next.js 15 + Shadcn UI + Zustand Invoice Generator",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

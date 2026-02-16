@@ -163,7 +163,6 @@ export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcod
                     {customer.address && <Text>{customer.address}</Text>}
                     {customer.phone && <Text>Phone: {customer.phone}</Text>}
                     {customer.email && <Text>Email: {customer.email}</Text>}
-                    {customer.gstin && <Text>TRN: {customer.gstin}</Text>}
                 </View>
 
                 {/* Table Header */}

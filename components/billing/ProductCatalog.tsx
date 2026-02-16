@@ -21,17 +21,17 @@ export function ProductCatalog() {
             : PRODUCTS.filter((p) => p.category === selectedCategory);
 
     return (
-        <div className="flex flex-col h-full bg-muted/20 border-r">
-            <div className="p-4 border-b space-y-4 bg-background">
+        <div className="flex flex-col h-full bg-muted/20 border-r min-h-0">
+            <div className="p-3 sm:p-4 border-b space-y-3 sm:space-y-4 bg-background shrink-0">
                 <div>
-                    <h2 className="text-lg font-semibold tracking-tight">Product Catalog</h2>
-                    <p className="text-sm text-muted-foreground">
+                    <h2 className="text-base sm:text-lg font-semibold tracking-tight">Product Catalog</h2>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                         Browse and add items to invoice
                     </p>
                 </div>
                 <ProductSearch />
 
-                <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide">
+                <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide -mx-1">
                     {CATEGORIES.map(cat => (
                         <button
                             key={cat}
@@ -49,8 +49,8 @@ export function ProductCatalog() {
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 @container">
-                <div className="grid grid-cols-2 @md:grid-cols-3 @xl:grid-cols-4 gap-3">
+            <div className="flex-1 overflow-y-auto scrollbar-hide p-3 sm:p-4 @container min-h-0">
+                <div className="grid grid-cols-2 sm:grid-cols-2 @md:grid-cols-3 @xl:grid-cols-4 gap-2 sm:gap-3">
                     {filteredProducts.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}

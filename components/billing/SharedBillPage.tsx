@@ -63,9 +63,9 @@ export function SharedBillPage() {
     if (!isClient) return null;
 
     return (
-        <div className="w-full min-h-screen flex flex-col items-center bg-muted/20 py-6">
+        <div className="w-full min-h-screen flex flex-col items-center bg-muted/20 py-4 sm:py-6 px-4">
             <ReceiptPreview />
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6 w-full max-w-[340px]">
                 <PDFDownloadLink
                     document={
                         <InvoicePDF

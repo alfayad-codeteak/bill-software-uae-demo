@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-import { Customer, InvoiceItem, Product, InvoiceState } from '@/lib/types';
+import { Bill, Customer, InvoiceItem, Product, InvoiceState } from '@/lib/types';
 
 // Use crypto.randomUUID if available, else a simplefallback
 const generateId = () => {
@@ -25,7 +25,7 @@ interface InvoiceStore extends InvoiceState {
     // Actions
     setInvoiceNumber: (id: string) => void;
     setDate: (date: Date) => void;
-    loadInvoice: (bill: any) => void; // Using any to avoid circular dep or import issues right now, but better to use Bill interface
+    loadInvoice: (bill: Bill) => void;
 
     // Computed (actions returning values)
     getSubtotal: () => number;
@@ -106,13 +106,18 @@ export const useInvoiceStore = create<InvoiceStore>()(
             setInvoiceNumber: (id) => set({ invoiceNumber: id }),
             setDate: (date) => set({ date }),
 
-            loadInvoice: (bill) => set({
-                customer: bill.customer,
-                items: bill.items,
-                invoiceNumber: bill.invoiceNumber,
-                date: bill.date,
-                viewMode: true
-            }),
+            loadInvoice: (bill) => {
+                const items = Array.isArray(bill.items) ? bill.items : [];
+                const date = bill.date instanceof Date ? bill.date : new Date(bill.date as string | number);
+                const customer = bill.customer ?? { name: '', email: '', phone: '', address: '' };
+                set({
+                    customer,
+                    items,
+                    invoiceNumber: bill.invoiceNumber ?? '',
+                    date,
+                    viewMode: true
+                });
+            },
 
             // Getters
             getSubtotal: () => {

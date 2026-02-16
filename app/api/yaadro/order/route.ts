@@ -3,10 +3,19 @@ import type { Bill } from "@/lib/types";
 
 const YAADRO_BASE = "https://api.yaadro.ae/api/orders/create/public";
 
+/** Normalize to 9-digit UAE mobile (digits only, must start with 5) for Yaadro. */
+function normalizeUaePhone(value: string): string {
+  const digits = (value || "").replace(/\D/g, "");
+  if (digits.length === 9 && /^5\d{8}$/.test(digits)) return digits;
+  return (value || "").trim();
+}
+
 function buildYaadroPayload(bill: Bill) {
+  const rawPhone = bill.customer.phone || "";
+  const customer_phone_number = normalizeUaePhone(rawPhone) || rawPhone;
   return {
     customer_name: bill.customer.name || "Walk-in Customer",
-    customer_phone_number: bill.customer.phone || "",
+    customer_phone_number,
     address: bill.customer.address || "",
     total_amount: Number(bill.total),
     bill_no: bill.invoiceNumber,

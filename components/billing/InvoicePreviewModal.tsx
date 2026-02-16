@@ -66,7 +66,10 @@ export function InvoicePreviewModal() {
         }
         const bill = getCurrentBill();
         await saveBill(bill);
-        toast.success("Bill saved");
+        const yaadroResult = await sendOrderToYaadro(bill);
+        if (yaadroResult.ok) toast.success("Bill saved · Order sent to Yaadro");
+        else if (yaadroResult.error && !yaadroResult.error.includes("not configured")) toast.error("Bill saved · Yaadro: " + yaadroResult.error);
+        else toast.success("Bill saved");
         setInternalOpen(true);
     };
 
@@ -122,15 +125,15 @@ export function InvoicePreviewModal() {
             {!viewMode && (
                 <DialogTrigger asChild>
                     <Button size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" onClick={handlePreviewClick}>
-                        <Eye className="w-4 h-4 mr-2" /> Preview & Download Invoice
+                        <Eye className="w-4 h-4 mr-2" /> Print Bill
                     </Button>
                 </DialogTrigger>
             )}
-            <DialogContent className="w-screen h-screen max-w-none sm:max-w-none m-0 p-0 bg-white rounded-none overflow-hidden shadow-none flex flex-col">
-                <DialogHeader className="px-6 py-4 border-b bg-background flex flex-row items-center justify-between">
-                    <div>
-                        <DialogTitle>{viewMode ? `Viewing Shared Bill • ${invoiceNumber}` : "Invoice Preview"}</DialogTitle>
-                        <DialogDescription>{viewMode ? "You are viewing a shared bill in read-only mode." : "Review the invoice details before downloading."}</DialogDescription>
+            <DialogContent className="fixed inset-0 translate-x-0 translate-y-0 w-full h-full max-w-none max-h-none m-0 p-0 bg-white rounded-none overflow-hidden shadow-lg flex flex-col sm:inset-4 sm:rounded-lg sm:w-[calc(100vw-2rem)] sm:h-[calc(100vh-2rem)] sm:max-w-[calc(100vw-2rem)] sm:max-h-[calc(100vh-2rem)]">
+                <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b bg-background flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="min-w-0">
+                        <DialogTitle className="text-base sm:text-lg truncate">{viewMode ? `Shared • ${invoiceNumber}` : "Invoice Preview"}</DialogTitle>
+                        <DialogDescription className="text-xs sm:text-sm">{viewMode ? "Read-only shared bill." : "Review and download."}</DialogDescription>
                     </div>
                     {viewMode && (
                         <Button variant="outline" onClick={handleBackToEditor}>
@@ -140,7 +143,7 @@ export function InvoicePreviewModal() {
                 </DialogHeader>
 
                 <Tabs defaultValue="standard" className="flex-1 flex flex-col min-h-0 bg-white">
-                    <div className="px-6 py-2 border-b bg-muted/20 flex justify-center">
+                    <div className="px-4 sm:px-6 py-2 border-b bg-muted/20 flex justify-center">
                         <TabsList className="grid w-full max-w-2xl grid-cols-2">
                             <TabsTrigger value="standard">Standard Invoice</TabsTrigger>
                             <TabsTrigger value="receipt">Thermal Receipt</TabsTrigger>
@@ -161,7 +164,7 @@ export function InvoicePreviewModal() {
                 </Tabs>
 
                 {/* Footer Actions */}
-                <div className="p-4 border-t bg-background flex justify-between items-center">
+                <div className="p-4 border-t bg-background flex flex-wrap justify-between items-center gap-3">
                     <div className="flex items-center gap-2">
                         {qrCodeUrl && (
                             <div className="flex flex-col items-center mr-4">

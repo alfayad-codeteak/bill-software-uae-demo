@@ -53,7 +53,12 @@ function HomeContent() {
             const res = await fetch(`/api/bills/${encodeURIComponent(viewId)}`);
             if (res.ok) {
               const data = (await res.json()) as Bill & { date: string };
-              const fetchedBill: Bill = { ...data, date: new Date(data.date) };
+              const fetchedBill: Bill = {
+                ...data,
+                date: new Date(data.date),
+                items: Array.isArray(data.items) ? data.items : [],
+                customer: data.customer ?? { name: "", email: "", phone: "", address: "" },
+              };
               bill = fetchedBill;
               await saveBill(fetchedBill);
             }
@@ -66,7 +71,17 @@ function HomeContent() {
             }
           }
           if (bill) {
-            loadInvoice(bill);
+            const b = bill as Bill;
+            const normalizedBill: Bill = {
+              invoiceNumber: b.invoiceNumber,
+              date: b.date instanceof Date ? b.date : new Date(b.date as string | number),
+              customer: b.customer ?? { name: "", email: "", phone: "", address: "" },
+              items: Array.isArray(b.items) ? b.items : [],
+              subtotal: Number(b.subtotal),
+              tax: Number(b.tax),
+              total: Number(b.total),
+            };
+            loadInvoice(normalizedBill);
             toast.success("Loaded shared bill");
           } else {
             setNotFound(true);
@@ -137,91 +152,114 @@ function HomeContent() {
   }
 
   return (
-    <main className="h-screen w-screen overflow-hidden bg-gray-50/50">
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="h-full w-full rounded-lg border"
-        id="main-layout"
-      >
-        <ResizablePanel defaultSize={50} minSize={30} maxSize={70}>
-          <div className="h-full border-r flex flex-col bg-muted/10">
-            <ProductCatalog />
+    <main className="h-screen w-screen overflow-hidden bg-gray-50/50 min-h-0">
+      {/* Mobile: single column stacked */}
+      <div className="flex flex-col h-full w-full md:hidden overflow-hidden">
+        <header className="shrink-0 px-4 py-3 border-b flex justify-between items-center bg-background gap-2">
+          <h2 className="text-base font-bold truncate">Invoice</h2>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button variant="outline" size="sm" onClick={handleSave} disabled={items.length === 0} className="min-h-10 touch-manipulation">
+              <Save className="w-4 h-4 sm:mr-1.5" /> <span className="hidden sm:inline">Save</span>
+            </Button>
+            <Button variant="ghost" size="sm" className="min-h-10 touch-manipulation" onClick={() => setIsHistoryOpen(true)}>
+              <History className="w-4 h-4 sm:mr-1.5" /> <span className="hidden sm:inline">History</span>
+            </Button>
           </div>
-        </ResizablePanel>
+        </header>
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain">
+          <div className="p-4 space-y-6 pb-24">
+            {/* Catalog: cap height on mobile so Customer + Table + Summary stay visible when scrolling */}
+            <section className="max-h-[42vh] min-h-[200px] flex flex-col overflow-hidden md:max-h-none md:min-h-0">
+              <ProductCatalog />
+            </section>
+            <section className="bg-card rounded-lg border p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer</h3>
+                <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive text-xs min-h-9">
+                  <RotateCcw className="w-3 h-3 mr-1" /> Reset
+                </Button>
+              </div>
+              <CustomerForm />
+            </section>
+            <section>
+              <InvoiceTable />
+            </section>
+            <section>
+              <InvoiceSummary />
+            </section>
+          </div>
+        </div>
+        <footer className="shrink-0 p-4 border-t bg-background">
+          <InvoicePreviewModal />
+        </footer>
+      </div>
 
-        <ResizableHandle withHandle />
-
-        <ResizablePanel defaultSize={50} minSize={30} maxSize={70}>
-          <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={30} minSize={20}>
-              <div className="h-full p-6 border-b overflow-y-auto bg-card">
-                <div className="flex items-center justify-between mb-3 px-1">
-                  <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer Details</h3>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive h-7 text-xs">
-                      <RotateCcw className="w-3 h-3 mr-1" /> Reset
-                    </Button>
-                  </div>
-                </div>
+      {/* Desktop: catalog | single right section */}
+      <div className="hidden md:flex h-full w-full rounded-lg border overflow-hidden">
+        <ResizablePanelGroup direction="horizontal" className="h-full w-full" id="main-layout">
+          <ResizablePanel defaultSize={45} minSize={28} maxSize={65}>
+            <div className="h-full border-r flex flex-col bg-muted/10">
+              <ProductCatalog />
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={55} minSize={35} maxSize={72}>
+            <div className="h-full flex flex-col min-h-0 bg-background">
+              <header className="shrink-0 px-6 py-4 border-b flex justify-between items-center bg-muted/20">
                 <div>
-                  <CustomerForm />
+                  <h2 className="text-lg font-semibold tracking-tight">Invoice</h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">Draft • {new Date().toLocaleDateString()}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={handleSave} disabled={items.length === 0}>
+                    <Save className="w-4 h-4 mr-2" /> Save
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => setIsHistoryOpen(true)}>
+                    <History className="w-4 h-4 mr-2" /> History
+                  </Button>
+                </div>
+              </header>
+              <div className="flex-1 min-h-0 overflow-y-auto">
+                <div className="px-6 py-6 max-w-3xl mx-auto space-y-8">
+                  <section className="bg-card rounded-lg border p-5 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-semibold text-foreground">Customer details</h3>
+                      <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive h-8 text-xs">
+                        <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset
+                      </Button>
+                    </div>
+                    <CustomerForm />
+                  </section>
+                  <section>
+                    <h3 className="text-sm font-semibold text-foreground mb-3">Items</h3>
+                    <InvoiceTable />
+                  </section>
+                  <section className="flex justify-end">
+                    <div className="w-full max-w-sm">
+                      <InvoiceSummary />
+                    </div>
+                  </section>
                 </div>
               </div>
-            </ResizablePanel>
+              <footer className="shrink-0 px-6 py-4 border-t bg-background">
+                <InvoicePreviewModal />
+              </footer>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
 
-            <ResizableHandle withHandle />
-
-            <ResizablePanel defaultSize={70} minSize={30}>
-              <div className="h-full flex flex-col min-h-0 bg-background">
-                <header className="px-6 py-3 border-b flex justify-between items-center bg-muted/20">
-                  <div>
-                    <h2 className="text-lg font-bold tracking-tight">Invoice Preview</h2>
-                    <p className="text-xs text-muted-foreground">Draft mode • {new Date().toLocaleDateString()}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={handleSave} disabled={items.length === 0}>
-                      <Save className="w-4 h-4 mr-2" /> Save
-                    </Button>
-
-                    <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
-                      <SheetTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <History className="w-4 h-4 mr-2" /> History
-                        </Button>
-                      </SheetTrigger>
-                      <SheetContent className="w-[380px] sm:w-[420px] flex flex-col p-0 overflow-hidden">
-                        <SheetHeader className="shrink-0 px-6 pt-6 pb-4 border-b border-border">
-                          <SheetTitle className="text-lg font-semibold">Saved Bills</SheetTitle>
-                        </SheetHeader>
-                        <div className="flex-1 overflow-y-auto px-5 py-5">
-                          <BillHistory />
-                        </div>
-                      </SheetContent>
-                    </Sheet>
-                  </div>
-                </header>
-
-                <div className="flex-1 overflow-y-auto p-6 scroll-smooth">
-                  <div className="space-y-6">
-                    <section>
-                      <InvoiceTable />
-                    </section>
-                    <section className="flex justify-end">
-                      <div className="w-full">
-                        <InvoiceSummary />
-                      </div>
-                    </section>
-                  </div>
-                </div>
-
-                <footer className="p-4 border-t bg-background mt-auto">
-                  <InvoicePreviewModal />
-                </footer>
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+      {/* Single shared History sheet (avoids two sidebars when both layouts use same state) */}
+      <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+        <SheetContent className="w-[100vw] max-w-[100%] sm:max-w-[420px] flex flex-col p-0 overflow-hidden">
+          <SheetHeader className="shrink-0 px-4 sm:px-6 pt-6 pb-4 border-b border-border">
+            <SheetTitle className="text-lg font-semibold">Saved Bills</SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-5">
+            <BillHistory />
+          </div>
+        </SheetContent>
+      </Sheet>
     </main>
   );
 }

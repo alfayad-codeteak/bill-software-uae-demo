@@ -108,8 +108,8 @@ export function InvoiceTable() {
     }
 
     return (
-        <div className="rounded-md border bg-card">
-            <Table>
+        <div className="rounded-md border bg-card overflow-hidden">
+            <Table className="min-w-[500px]">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -135,7 +135,7 @@ export function InvoiceTable() {
                             data-state={row.getIsSelected() && "selected"}
                         >
                             {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id} className="p-3">
+                                <TableCell key={cell.id} className="p-2 sm:p-3">
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </TableCell>
                             ))}

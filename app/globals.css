@@ -117,6 +117,15 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Hide scrollbar while keeping scroll (categories, product list, etc.) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

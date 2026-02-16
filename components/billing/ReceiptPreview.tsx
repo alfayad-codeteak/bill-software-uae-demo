@@ -18,9 +18,9 @@ export function ReceiptPreview() {
     const shareBillUrl = getShareableBillUrl({ invoiceNumber });
 
     return (
-        <div className="w-full h-full flex justify-center p-8 bg-muted/20 overflow-y-auto">
+        <div className="w-full min-h-full flex justify-center p-4 sm:p-8 bg-muted/20 overflow-y-auto">
             {/* Ticket Container */}
-            <div className="relative w-[340px] bg-white rounded-3xl shadow-xl flex flex-col h-fit my-auto">
+            <div className="relative w-full max-w-[340px] bg-white rounded-2xl sm:rounded-3xl shadow-xl flex flex-col h-fit my-auto">
 
                 {/* Header - Success Message */}
                 <div className="pt-8 px-6 pb-6 text-center">
@@ -76,9 +76,6 @@ export function ReceiptPreview() {
                         )}
                         {customer.address && (
                             <p className="text-xs text-gray-500 mt-1 leading-relaxed">{customer.address}</p>
-                        )}
-                        {customer.gstin && (
-                            <p className="text-xs text-gray-500 mt-1">TRN: {customer.gstin}</p>
                         )}
                     </div>
 
