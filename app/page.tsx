@@ -10,6 +10,7 @@ import { InvoicePreviewModal } from "@/components/billing/InvoicePreviewModal";
 import { SharedBillPage } from "@/components/billing/SharedBillPage";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { db } from "@/lib/db";
+import type { Bill } from "@/lib/types";
 import { parseBillFromShareUrl } from "@/lib/utils";
 import { SharedBillNotFound } from "@/components/billing/SharedBillNotFound";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,15 @@ function HomeContent() {
       const loadSharedBill = async () => {
         try {
           let bill: Awaited<ReturnType<typeof db.bills.get>> = await db.bills.get(viewId);
+          if (!bill) {
+            const res = await fetch(`/api/bills/${encodeURIComponent(viewId)}`);
+            if (res.ok) {
+              const data = (await res.json()) as Bill & { date: string };
+              const fetchedBill: Bill = { ...data, date: new Date(data.date) };
+              bill = fetchedBill;
+              await saveBill(fetchedBill);
+            }
+          }
           if (!bill) {
             const fromHash = parseBillFromShareUrl();
             if (fromHash) {
@@ -128,8 +138,12 @@ function HomeContent() {
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-gray-50/50">
-      <ResizablePanelGroup direction="horizontal" className="h-full w-full rounded-lg border">
-        <ResizablePanel defaultSize={50} minSize={30}>
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="h-full w-full rounded-lg border"
+        id="main-layout"
+      >
+        <ResizablePanel defaultSize={50} minSize={30} maxSize={70}>
           <div className="h-full border-r flex flex-col bg-muted/10">
             <ProductCatalog />
           </div>
@@ -137,7 +151,7 @@ function HomeContent() {
 
         <ResizableHandle withHandle />
 
-        <ResizablePanel defaultSize={50} minSize={30}>
+        <ResizablePanel defaultSize={50} minSize={30} maxSize={70}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={30} minSize={20}>
               <div className="h-full p-6 border-b overflow-y-auto bg-card">
@@ -175,11 +189,13 @@ function HomeContent() {
                           <History className="w-4 h-4 mr-2" /> History
                         </Button>
                       </SheetTrigger>
-                      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
-                        <SheetHeader className="mb-4">
-                          <SheetTitle>Saved Bills</SheetTitle>
+                      <SheetContent className="w-[380px] sm:w-[420px] flex flex-col p-0 overflow-hidden">
+                        <SheetHeader className="shrink-0 px-6 pt-6 pb-4 border-b border-border">
+                          <SheetTitle className="text-lg font-semibold">Saved Bills</SheetTitle>
                         </SheetHeader>
-                        <BillHistory />
+                        <div className="flex-1 overflow-y-auto px-5 py-5">
+                          <BillHistory />
+                        </div>
                       </SheetContent>
                     </Sheet>
                   </div>

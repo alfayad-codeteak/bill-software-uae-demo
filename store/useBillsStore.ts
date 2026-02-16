@@ -29,7 +29,19 @@ export const useBillsStore = create<BillsStore>((set) => ({
     saveBill: async (bill) => {
         try {
             await db.bills.put(bill);
-            // Reload to update list
+            // Sync to Supabase so share-by-id works (short URL + QR)
+            try {
+                await fetch('/api/bills', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...bill,
+                        date: bill.date instanceof Date ? bill.date.toISOString() : bill.date,
+                    }),
+                });
+            } catch {
+                // Supabase optional; local save already succeeded
+            }
             const bills = await db.bills.toArray();
             set({ bills: bills.reverse() });
         } catch (error) {

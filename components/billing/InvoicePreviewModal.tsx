@@ -4,7 +4,7 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { useBillsStore } from "@/store/useBillsStore";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { formatCurrency, getShareableBillUrlWithData } from "@/lib/utils";
+import { formatCurrency, getShareableBillUrl } from "@/lib/utils";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { InvoicePDF } from "./InvoicePDF";
 import { Download, Eye } from "lucide-react";
@@ -79,19 +79,10 @@ export function InvoicePreviewModal() {
     const [barcodeUrl, setBarcodeUrl] = useState<string>("");
 
     useEffect(() => {
-        if (!invoiceNumber || items.length === 0) return;
+        if (!invoiceNumber) return;
 
-        // QR contains full bill in URL so it works when scanned on another device (e.g. mobile)
-        const bill = {
-            invoiceNumber,
-            date,
-            customer,
-            items,
-            subtotal: getSubtotal(),
-            tax: getTotalTax(),
-            total: getGrandTotal(),
-        };
-        const shareUrl = getShareableBillUrlWithData(bill);
+        // Short URL by id – bill loads from Supabase when opened
+        const shareUrl = getShareableBillUrl({ invoiceNumber });
         if (!shareUrl) return;
         import("qrcode").then((QRCode) => {
             QRCode.toDataURL(shareUrl, { width: 100, margin: 1 }, (err, url) => {
@@ -112,7 +103,7 @@ export function InvoicePreviewModal() {
             });
             setBarcodeUrl(canvas.toDataURL("image/png"));
         });
-    }, [invoiceNumber, date, customer, items, getSubtotal, getTotalTax, getGrandTotal]);
+    }, [invoiceNumber]);
 
     if (!isClient) return null; // Prevent hydration error for PDFDownloadLink
 

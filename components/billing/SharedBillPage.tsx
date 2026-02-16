@@ -7,7 +7,7 @@ import { InvoicePDF } from "./InvoicePDF";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getShareableBillUrlWithData } from "@/lib/utils";
+import { getShareableBillUrl } from "@/lib/utils";
 
 export function SharedBillPage() {
     const { customer, items, invoiceNumber, date, getSubtotal, getTotalTax, getGrandTotal } = useInvoiceStore();
@@ -20,18 +20,9 @@ export function SharedBillPage() {
     }, []);
 
     useEffect(() => {
-        if (!invoiceNumber || items.length === 0) return;
+        if (!invoiceNumber) return;
 
-        const bill = {
-            invoiceNumber,
-            date,
-            customer,
-            items,
-            subtotal: getSubtotal(),
-            tax: getTotalTax(),
-            total: getGrandTotal(),
-        };
-        const shareUrl = getShareableBillUrlWithData(bill);
+        const shareUrl = getShareableBillUrl({ invoiceNumber });
         if (!shareUrl) return;
         import("qrcode").then((QRCode) => {
             QRCode.toDataURL(shareUrl, { width: 100, margin: 1 }, (err, url) => {
@@ -50,7 +41,7 @@ export function SharedBillPage() {
             });
             setBarcodeUrl(canvas.toDataURL("image/png"));
         });
-    }, [invoiceNumber, date, customer, items, getSubtotal, getTotalTax, getGrandTotal]);
+    }, [invoiceNumber]);
 
     if (!isClient) return null;
 
