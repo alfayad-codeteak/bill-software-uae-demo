@@ -24,14 +24,32 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 function HomeContent() {
   const { setViewMode, setCustomer, items, setInvoiceNumber, setDate, resetInvoice, viewMode, loadInvoice, invoiceNumber, date, customer, getSubtotal, getTotalTax, getGrandTotal } = useInvoiceStore();
   const { saveBill } = useBillsStore();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+  const handleOpenSavedBill = (bill: Bill) => {
+    const normalizedBill: Bill = {
+      invoiceNumber: bill.invoiceNumber,
+      date: bill.date instanceof Date ? bill.date : new Date(bill.date as string | number),
+      customer: bill.customer ?? { name: "", email: "", phone: "", address: "" },
+      items: Array.isArray(bill.items) ? bill.items : [],
+      subtotal: Number(bill.subtotal),
+      tax: Number(bill.tax),
+      total: Number(bill.total),
+    };
+    loadInvoice(normalizedBill);
+    setViewMode(true);
+    router.replace(`/?view=${encodeURIComponent(bill.invoiceNumber)}`);
+    setIsHistoryOpen(false);
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -153,7 +171,7 @@ function HomeContent() {
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-gray-50/50 min-h-0">
-      {/* Mobile: single column stacked */}
+      {/* Mobile: tabs for Catalog | Bill */}
       <div className="flex flex-col h-full w-full md:hidden overflow-hidden">
         <header className="shrink-0 px-4 py-3 border-b flex justify-between items-center bg-background gap-2">
           <h2 className="text-base font-bold truncate">Invoice</h2>
@@ -166,32 +184,43 @@ function HomeContent() {
             </Button>
           </div>
         </header>
-        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain">
-          <div className="p-4 space-y-6 pb-24">
-            {/* Catalog: cap height on mobile so Customer + Table + Summary stay visible when scrolling */}
-            <section className="max-h-[42vh] min-h-[200px] flex flex-col overflow-hidden md:max-h-none md:min-h-0">
-              <ProductCatalog />
-            </section>
-            <section className="bg-card rounded-lg border p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer</h3>
-                <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive text-xs min-h-9">
-                  <RotateCcw className="w-3 h-3 mr-1" /> Reset
-                </Button>
-              </div>
-              <CustomerForm />
-            </section>
-            <section>
-              <InvoiceTable />
-            </section>
-            <section>
-              <InvoiceSummary />
-            </section>
+        <Tabs defaultValue="catalog" className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <div className="shrink-0 px-4 pt-3 pb-2 border-b bg-muted/20">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="catalog" className="touch-manipulation">Catalog</TabsTrigger>
+              <TabsTrigger value="bill" className="touch-manipulation">Bill</TabsTrigger>
+            </TabsList>
           </div>
-        </div>
-        <footer className="shrink-0 p-4 border-t bg-background">
-          <InvoicePreviewModal />
-        </footer>
+          <TabsContent value="catalog" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <ProductCatalog />
+            </div>
+          </TabsContent>
+          <TabsContent value="bill" className="flex-1 min-h-0 overflow-hidden mt-0 data-[state=active]:flex data-[state=active]:flex-col">
+            <div className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
+              <div className="p-4 space-y-6 pb-4">
+                <section className="bg-card rounded-lg border p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">Customer</h3>
+                    <Button variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive text-xs min-h-9">
+                      <RotateCcw className="w-3 h-3 mr-1" /> Reset
+                    </Button>
+                  </div>
+                  <CustomerForm />
+                </section>
+                <section>
+                  <InvoiceTable />
+                </section>
+                <section>
+                  <InvoiceSummary />
+                </section>
+              </div>
+            </div>
+            <footer className="shrink-0 p-4 pt-3 border-t bg-background">
+              <InvoicePreviewModal />
+            </footer>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Desktop: catalog | single right section */}
@@ -256,7 +285,7 @@ function HomeContent() {
             <SheetTitle className="text-lg font-semibold">Saved Bills</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-5">
-            <BillHistory />
+            <BillHistory onOpenBill={handleOpenSavedBill} />
           </div>
         </SheetContent>
       </Sheet>

@@ -4,7 +4,7 @@ import { Product } from "@/lib/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
     const addItem = useInvoiceStore((state) => state.addItem);
+    const updateQty = useInvoiceStore((state) => state.updateQty);
+    const removeItem = useInvoiceStore((state) => state.removeItem);
+    const items = useInvoiceStore((state) => state.items);
+
+    const lineItem = items.find((i) => i.productId === product.id);
+    const isInBill = !!lineItem;
 
     const handleAdd = () => {
         addItem(product);
@@ -22,6 +28,16 @@ export function ProductCard({ product }: ProductCardProps) {
             description: `Added to invoice at ${formatCurrency(product.price)}`,
             duration: 2000,
         });
+    };
+
+    const handleQtyChange = (delta: number) => {
+        if (!lineItem) return;
+        const newQty = lineItem.qty + delta;
+        if (newQty <= 0) {
+            removeItem(lineItem.id);
+            return;
+        }
+        updateQty(lineItem.id, newQty);
     };
 
     return (
@@ -56,9 +72,37 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
             </CardContent>
             <CardFooter className="p-3 pt-0 pb-3 mt-auto">
-                <Button onClick={handleAdd} className="w-full h-8 text-xs" size="sm">
-                    <Plus className="w-3 h-3 mr-1" /> Add
-                </Button>
+                {isInBill ? (
+                    <div className="w-full flex items-center justify-between gap-1 rounded-md border bg-muted/30 p-1">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0"
+                            onClick={() => handleQtyChange(-1)}
+                            aria-label="Decrease quantity"
+                        >
+                            <Minus className="w-3.5 h-3.5" />
+                        </Button>
+                        <span className="text-sm font-semibold tabular-nums min-w-[1.5rem] text-center">
+                            {lineItem.qty}
+                        </span>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0"
+                            onClick={() => handleQtyChange(1)}
+                            aria-label="Increase quantity"
+                        >
+                            <Plus className="w-3.5 h-3.5" />
+                        </Button>
+                    </div>
+                ) : (
+                    <Button onClick={handleAdd} className="w-full h-8 text-xs" size="sm">
+                        <Plus className="w-3 h-3 mr-1" /> Add
+                    </Button>
+                )}
             </CardFooter>
         </Card>
     );

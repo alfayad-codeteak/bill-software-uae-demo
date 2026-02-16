@@ -124,8 +124,8 @@ export function InvoicePreviewModal() {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             {!viewMode && (
                 <DialogTrigger asChild>
-                    <Button size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" onClick={handlePreviewClick}>
-                        <Eye className="w-4 h-4 mr-2" /> Print Bill
+                    <Button size="lg" className="w-full min-h-12 sm:min-h-11 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg text-base font-semibold touch-manipulation" onClick={handlePreviewClick}>
+                        <Eye className="w-5 h-5 sm:w-4 sm:h-4 mr-2 shrink-0" /> Print Bill
                     </Button>
                 </DialogTrigger>
             )}

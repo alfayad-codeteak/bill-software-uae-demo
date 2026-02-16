@@ -3,8 +3,9 @@
 import { useBillsStore } from "@/store/useBillsStore";
 import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
-import { Trash2, Eye, QrCode } from "lucide-react";
+import { Trash2, Eye, QrCode, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Bill } from "@/lib/types";
 import {
     Dialog,
     DialogContent,
@@ -20,7 +21,11 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { getShareableBillUrl } from "@/lib/utils";
 
-export function BillHistory() {
+interface BillHistoryProps {
+    onOpenBill?: (bill: Bill) => void;
+}
+
+export function BillHistory({ onOpenBill }: BillHistoryProps) {
     const { bills, loadBills, deleteBill } = useBillsStore();
 
     useEffect(() => {
@@ -47,7 +52,13 @@ export function BillHistory() {
                     key={bill.invoiceNumber}
                     className="bg-card rounded-xl border border-border shadow-sm overflow-hidden flex flex-col"
                 >
-                    <div className="p-5 flex flex-col gap-4">
+                    <div
+                        className="p-5 flex flex-col gap-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() => onOpenBill?.(bill as Bill)}
+                        role={onOpenBill ? "button" : undefined}
+                        tabIndex={onOpenBill ? 0 : undefined}
+                        onKeyDown={onOpenBill ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpenBill(bill as Bill); } } : undefined}
+                    >
                         <div className="flex justify-between items-start gap-4">
                             <div className="min-w-0 flex-1">
                                 <h3 className="font-semibold text-base text-foreground truncate">
@@ -63,8 +74,16 @@ export function BillHistory() {
                             </div>
                         </div>
                         <p className="text-xs text-muted-foreground">{bill.items.length} item{bill.items.length !== 1 ? "s" : ""}</p>
+                        {onOpenBill && (
+                            <p className="text-xs text-primary font-medium">Click to open with link</p>
+                        )}
                     </div>
-                    <div className="px-5 py-3 border-t border-border bg-muted/30 flex items-center justify-end gap-2">
+                    <div className="px-5 py-3 border-t border-border bg-muted/30 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                        {onOpenBill && (
+                            <Button variant="default" size="sm" onClick={() => onOpenBill(bill as Bill)} className="mr-auto">
+                                <ExternalLink className="w-4 h-4 mr-1.5" /> Open
+                            </Button>
+                        )}
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button variant="outline" size="icon" title="Share Bill">
