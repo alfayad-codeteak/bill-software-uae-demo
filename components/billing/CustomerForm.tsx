@@ -6,8 +6,10 @@ import * as z from "zod";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect } from "react";
+import { X } from "lucide-react";
 
 /** UAE mobile: exactly 9 digits, starting with 5 (e.g. 501234567). Used for Yaadro. */
 export const UAE_PHONE_REGEX = /^5\d{8}$/;
@@ -99,7 +101,21 @@ export function CustomerForm() {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="address">Billing Address</Label>
+                <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="address">Billing Address</Label>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground shrink-0"
+                        onClick={() => {
+                            form.setValue("address", "");
+                            setCustomer({ address: "" });
+                        }}
+                    >
+                        <X className="w-3 h-3 mr-1" /> Clear
+                    </Button>
+                </div>
                 <Input
                     id="address"
                     placeholder="Street, City, State, Zip"

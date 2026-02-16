@@ -9,7 +9,7 @@ import { sendOrderToYaadro } from "@/lib/yaadro";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { InvoicePDF } from "./InvoicePDF";
 import { Download, Eye } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -82,6 +82,24 @@ export function InvoicePreviewModal() {
 
     useEffect(() => {
         setIsClient(true);
+    }, []);
+
+    const handlePreviewClickRef = useRef(handlePreviewClick);
+    handlePreviewClickRef.current = handlePreviewClick;
+
+    // Keyboard shortcut: Ctrl/Cmd + P → Print Bill (open preview)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "p") {
+                const target = e.target as HTMLElement;
+                const isInput = /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName) || target?.isContentEditable;
+                if (isInput) return;
+                e.preventDefault();
+                handlePreviewClickRef.current();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
 
     const subtotal = getSubtotal();

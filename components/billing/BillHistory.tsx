@@ -3,7 +3,7 @@
 import { useBillsStore } from "@/store/useBillsStore";
 import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
-import { Trash2, Eye, QrCode, ExternalLink } from "lucide-react";
+import { Trash2, Eye, QrCode, ExternalLink, Pencil, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Bill } from "@/lib/types";
 import {
@@ -23,10 +23,13 @@ import { getShareableBillUrl } from "@/lib/utils";
 
 interface BillHistoryProps {
     onOpenBill?: (bill: Bill) => void;
+    onEditBill?: (bill: Bill) => void;
+    onSendToYaadro?: (bill: Bill) => Promise<void>;
 }
 
-export function BillHistory({ onOpenBill }: BillHistoryProps) {
+export function BillHistory({ onOpenBill, onEditBill, onSendToYaadro }: BillHistoryProps) {
     const { bills, loadBills, deleteBill } = useBillsStore();
+    const [sendingId, setSendingId] = useState<string | null>(null);
 
     useEffect(() => {
         loadBills();
@@ -78,10 +81,35 @@ export function BillHistory({ onOpenBill }: BillHistoryProps) {
                             <p className="text-xs text-primary font-medium">Click to open with link</p>
                         )}
                     </div>
-                    <div className="px-5 py-3 border-t border-border bg-muted/30 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="px-5 py-3 border-t border-border bg-muted/30 flex flex-wrap items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                         {onOpenBill && (
                             <Button variant="default" size="sm" onClick={() => onOpenBill(bill as Bill)} className="mr-auto">
                                 <ExternalLink className="w-4 h-4 mr-1.5" /> Open
+                            </Button>
+                        )}
+                        {onEditBill && (
+                            <Button variant="outline" size="sm" onClick={() => onEditBill(bill as Bill)} title="Edit invoice">
+                                <Pencil className="w-4 h-4 mr-1.5" /> Edit
+                            </Button>
+                        )}
+                        {onSendToYaadro && !(bill as Bill & { yaadroSentAt?: string }).yaadroSentAt && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={sendingId === bill.invoiceNumber}
+                                onClick={async () => {
+                                    setSendingId(bill.invoiceNumber);
+                                    try {
+                                        await onSendToYaadro(bill as Bill);
+                                        await loadBills();
+                                    } finally {
+                                        setSendingId(null);
+                                    }
+                                }}
+                                title="Send order to Yaadro"
+                            >
+                                <Send className="w-4 h-4 mr-1.5" />
+                                {sendingId === bill.invoiceNumber ? "Sending…" : "Send to Yaadro"}
                             </Button>
                         )}
                         <Dialog>

@@ -62,12 +62,10 @@ const styles = StyleSheet.create({
         paddingRight: 5,
     },
     col1: { width: "5%" }, // #
-    col2: { width: "40%" }, // Item
-    col3: { width: "10%", textAlign: "right" }, // Rate
-    col4: { width: "10%", textAlign: "center" }, // Qty
-    col5: { width: "10%", textAlign: "right" }, // GST %
-    col6: { width: "10%", textAlign: "right" }, // GST Amt
-    col7: { width: "15%", textAlign: "right" }, // Total
+    col2: { width: "45%" }, // Item
+    col3: { width: "15%", textAlign: "right" }, // Rate
+    col4: { width: "15%", textAlign: "center" }, // Qty
+    col5: { width: "20%", textAlign: "right" }, // Amount
 
     totalSection: {
         marginTop: 20,
@@ -131,9 +129,7 @@ interface InvoicePDFProps {
 }
 
 export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcodeUrl }: InvoicePDFProps) => {
-    const subtotal = items.reduce((acc, item) => acc + item.amount, 0);
-    const totalTax = items.reduce((acc, item) => acc + item.gstAmount, 0);
-    const grandTotal = subtotal + totalTax;
+    const grandTotal = items.reduce((acc, item) => acc + item.amount, 0);
 
     return (
         <Document>
@@ -149,7 +145,6 @@ export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcod
                         <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Your Company Name</Text>
                         <Text style={{ color: '#666' }}>123 Business Park, Tech City</Text>
                         <Text style={{ color: '#666' }}>Bangalore, India - 560001</Text>
-                        <Text style={{ color: '#666' }}>GSTIN: 29ABCDE1234F1Z5</Text>
                         {qrCodeUrl && (
                             <Image src={qrCodeUrl} style={{ width: 50, height: 50, marginTop: 10 }} />
                         )}
@@ -171,9 +166,7 @@ export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcod
                     <Text style={[styles.cell, styles.col2]}>Item Description</Text>
                     <Text style={[styles.cell, styles.col3]}>Rate</Text>
                     <Text style={[styles.cell, styles.col4]}>Qty</Text>
-                    <Text style={[styles.cell, styles.col5]}>VAT %</Text>
-                    <Text style={[styles.cell, styles.col6]}>VAT</Text>
-                    <Text style={[styles.cell, styles.col7]}>Amount</Text>
+                    <Text style={[styles.cell, styles.col5]}>Amount</Text>
                 </View>
 
                 {/* Table Rows */}
@@ -183,22 +176,12 @@ export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcod
                         <Text style={[styles.cell, styles.col2]}>{item.name}</Text>
                         <Text style={[styles.cell, styles.col3]}>{item.rate.toFixed(2)}</Text>
                         <Text style={[styles.cell, styles.col4]}>{item.qty} {item.unit}</Text>
-                        <Text style={[styles.cell, styles.col5]}>{item.gstRate}%</Text>
-                        <Text style={[styles.cell, styles.col6]}>{item.gstAmount.toFixed(2)}</Text>
-                        <Text style={[styles.cell, styles.col7]}>{(item.amount + item.gstAmount).toFixed(2)}</Text>
+                        <Text style={[styles.cell, styles.col5]}>{item.amount.toFixed(2)}</Text>
                     </View>
                 ))}
 
                 {/* Totals */}
                 <View style={styles.totalSection}>
-                    <View style={styles.totalRow}>
-                        <Text style={styles.totalLabel}>Subtotal:</Text>
-                        <Text style={styles.totalValue}>{subtotal.toFixed(2)}</Text>
-                    </View>
-                    <View style={styles.totalRow}>
-                        <Text style={styles.totalLabel}>Total VAT:</Text>
-                        <Text style={styles.totalValue}>{totalTax.toFixed(2)}</Text>
-                    </View>
                     <View style={[styles.totalRow, styles.grandTotal]}>
                         <Text style={[styles.totalLabel, { color: 'black', fontWeight: 'bold' }]}>Grand Total:</Text>
                         <Text style={styles.totalValue}>AED {grandTotal.toFixed(2)}</Text>

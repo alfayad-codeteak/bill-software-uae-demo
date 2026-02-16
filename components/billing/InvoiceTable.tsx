@@ -30,12 +30,7 @@ export function InvoiceTable() {
             accessorKey: "name",
             header: "Item Description",
             cell: ({ row }) => (
-                <div className="flex flex-col">
-                    <span className="font-medium">{row.original.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                        VAT: {row.original.gstRate}%
-                    </span>
-                </div>
+                <span className="font-medium">{row.original.name}</span>
             ),
         },
         {

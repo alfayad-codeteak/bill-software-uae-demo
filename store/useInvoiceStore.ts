@@ -59,7 +59,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
                     return {
                         items: state.items.map((i) =>
                             i.productId === product.id
-                                ? { ...i, qty: i.qty + 1, amount: (i.qty + 1) * i.rate, gstAmount: ((i.qty + 1) * i.rate) * (i.gstRate / 100) }
+                                ? { ...i, qty: i.qty + 1, amount: (i.qty + 1) * i.rate, gstAmount: 0 }
                                 : i
                         )
                     };
@@ -72,9 +72,9 @@ export const useInvoiceStore = create<InvoiceStore>()(
                     qty: 1,
                     unit: product.unit,
                     rate: product.price,
-                    gstRate: product.gstRate,
+                    gstRate: 0,
                     amount: product.price * 1,
-                    gstAmount: (product.price * 1) * (product.gstRate / 100),
+                    gstAmount: 0,
                 };
 
                 return { items: [...state.items, newItem] };
@@ -89,8 +89,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
                     if (i.id !== itemId) return i;
                     const newQty = Math.max(0, qty); // Prevent negative
                     const newAmount = newQty * i.rate;
-                    const newGstAmount = newAmount * (i.gstRate / 100);
-                    return { ...i, qty: newQty, amount: newAmount, gstAmount: newGstAmount };
+                    return { ...i, qty: newQty, amount: newAmount, gstAmount: 0 };
                 })
             })),
 

@@ -44,4 +44,6 @@ export interface Bill {
   subtotal: number;
   tax: number;
   total: number;
+  /** Set when order was successfully sent to Yaadro (ISO date string). */
+  yaadroSentAt?: string;
 }

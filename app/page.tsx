@@ -12,6 +12,7 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { db } from "@/lib/db";
 import type { Bill } from "@/lib/types";
 import { parseBillFromShareUrl } from "@/lib/utils";
+import { validateYaadroCustomer, sendOrderToYaadro } from "@/lib/yaadro";
 import { SharedBillNotFound } from "@/components/billing/SharedBillNotFound";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -57,8 +58,8 @@ function HomeContent() {
     setTouchStartX(null);
   };
 
-  const handleOpenSavedBill = (bill: Bill) => {
-    const normalizedBill: Bill = {
+  function normalizeBill(bill: Bill): Bill {
+    return {
       invoiceNumber: bill.invoiceNumber,
       date: bill.date instanceof Date ? bill.date : new Date(bill.date as string | number),
       customer: bill.customer ?? { name: "", email: "", phone: "", address: "" },
@@ -66,11 +67,33 @@ function HomeContent() {
       subtotal: Number(bill.subtotal),
       tax: Number(bill.tax),
       total: Number(bill.total),
+      yaadroSentAt: bill.yaadroSentAt,
     };
-    loadInvoice(normalizedBill);
+  }
+
+  const handleOpenSavedBill = (bill: Bill) => {
+    loadInvoice(normalizeBill(bill));
     setViewMode(true);
     router.replace(`/?view=${encodeURIComponent(bill.invoiceNumber)}`);
     setIsHistoryOpen(false);
+  };
+
+  const handleEditBill = (bill: Bill) => {
+    loadInvoice(normalizeBill(bill));
+    setViewMode(false);
+    router.replace("/");
+    setIsHistoryOpen(false);
+  };
+
+  const handleSendToYaadro = async (bill: Bill) => {
+    const normalized = normalizeBill(bill);
+    const result = await sendOrderToYaadro(normalized);
+    if (result.ok) {
+      await saveBill({ ...normalized, yaadroSentAt: new Date().toISOString() });
+      toast.success("Order sent to Yaadro");
+    } else {
+      toast.error(result.error ?? "Failed to send to Yaadro");
+    }
   };
 
   useEffect(() => {
@@ -159,9 +182,20 @@ function HomeContent() {
       toast.error("Add items before saving");
       return;
     }
+    const name = (customer.name || "").trim();
+    if (name.length < 2) {
+      toast.error("Customer name is required (at least 2 characters)");
+      return;
+    }
+    const phoneValidation = validateYaadroCustomer(customer);
+    if (!phoneValidation.valid) {
+      toast.error(phoneValidation.error ?? "Valid UAE phone is required");
+      return;
+    }
 
-    // Create bill object
-    const bill = {
+    // Create bill object (preserve yaadroSentAt if updating an existing bill)
+    const existing = await db.bills.get(invoiceNumber);
+    const bill: Bill = {
       invoiceNumber: invoiceNumber,
       date: date,
       customer: customer,
@@ -169,12 +203,41 @@ function HomeContent() {
       subtotal: getSubtotal(),
       tax: getTotalTax(),
       total: getGrandTotal(),
+      ...(existing?.yaadroSentAt && { yaadroSentAt: existing.yaadroSentAt }),
     };
 
     await saveBill(bill);
     toast.success("Bill saved successfully");
     setIsHistoryOpen(true);
   };
+
+  // Keyboard shortcuts (when not in viewMode)
+  useEffect(() => {
+    if (viewMode) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInput = /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName) || target?.isContentEditable;
+      if (isInput) return;
+
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        handleSave();
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "h") {
+        e.preventDefault();
+        setIsHistoryOpen(true);
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "r") {
+        e.preventDefault();
+        handleReset();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [viewMode, items.length, invoiceNumber, date, customer, getSubtotal, getTotalTax, getGrandTotal]); // eslint-disable-line react-hooks/exhaustive-deps -- handlers are stable
 
   if (!isClient) return null;
 
@@ -267,6 +330,15 @@ function HomeContent() {
                 <div>
                   <h2 className="text-lg font-semibold tracking-tight">Invoice</h2>
                   <p className="text-xs text-muted-foreground mt-0.5">Draft • {new Date().toLocaleDateString()}</p>
+                  <p className="text-[10px] text-muted-foreground/80 mt-1" title="Keyboard shortcuts">
+                    <kbd className="rounded px-1 bg-muted">⌘P</kbd> Print
+                    <span className="mx-1">·</span>
+                    <kbd className="rounded px-1 bg-muted">⌘S</kbd> Save
+                    <span className="mx-1">·</span>
+                    <kbd className="rounded px-1 bg-muted">⌘⇧H</kbd> History
+                    <span className="mx-1">·</span>
+                    <kbd className="rounded px-1 bg-muted">⌘⇧R</kbd> Reset
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={handleSave} disabled={items.length === 0}>
@@ -314,7 +386,7 @@ function HomeContent() {
             <SheetTitle className="text-lg font-semibold">Saved Bills</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-5">
-            <BillHistory onOpenBill={handleOpenSavedBill} />
+            <BillHistory onOpenBill={handleOpenSavedBill} onEditBill={handleEditBill} onSendToYaadro={handleSendToYaadro} />
           </div>
         </SheetContent>
       </Sheet>

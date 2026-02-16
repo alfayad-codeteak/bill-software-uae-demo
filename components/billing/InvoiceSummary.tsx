@@ -6,10 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 export function InvoiceSummary() {
-    const { getSubtotal, getTotalTax, getGrandTotal, items } = useInvoiceStore();
+    const { getSubtotal, getGrandTotal, items } = useInvoiceStore();
 
     const subtotal = getSubtotal();
-    const tax = getTotalTax();
     const total = getGrandTotal();
 
     if (items.length === 0) return null;
@@ -20,10 +19,6 @@ export function InvoiceSummary() {
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>{formatCurrency(subtotal)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Total VAT</span>
-                    <span>{formatCurrency(tax)}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between items-end">

@@ -10,9 +10,8 @@ interface InvoiceTemplateProps {
 }
 
 export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
-    const { customer, items, getSubtotal, getTotalTax, getGrandTotal } = useInvoiceStore();
+    const { customer, items, getSubtotal, getGrandTotal } = useInvoiceStore();
     const subtotal = getSubtotal();
-    const tax = getTotalTax();
     const total = getGrandTotal();
 
     const shareBillUrl = getShareableBillUrl({ invoiceNumber: invoiceId });
@@ -77,29 +76,24 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
                     <table className="w-full text-left min-w-[400px]">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-200">
-                                <th className="py-3 px-3 sm:px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider w-[40%]">Item Description</th>
-                                <th className="py-3 px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider text-right w-[15%]">Rate</th>
+                                <th className="py-3 px-3 sm:px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider w-[50%]">Item Description</th>
+                                <th className="py-3 px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider text-right w-[20%]">Rate</th>
                                 <th className="py-3 px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider text-right w-[15%]">Qty</th>
-                                <th className="py-3 px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider text-right w-[15%]">VAT</th>
                                 <th className="py-3 px-4 font-semibold text-xs text-gray-500 uppercase tracking-wider text-right w-[15%]">Amount</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {items.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="py-4 px-4 align-top">
-                                        <div className="font-medium text-gray-900">{item.name}</div>
-                                        <div className="text-xs text-gray-500 mt-0.5">{item.gstRate}% standard VAT rate</div>
-                                    </td>
+                                    <td className="py-4 px-4 align-top font-medium text-gray-900">{item.name}</td>
                                     <td className="py-4 px-4 text-right align-top text-gray-600">{formatCurrency(item.rate)}</td>
                                     <td className="py-4 px-4 text-right align-top text-gray-600">{item.qty} {item.unit}</td>
-                                    <td className="py-4 px-4 text-right align-top text-gray-600">{formatCurrency(item.gstAmount)}</td>
-                                    <td className="py-4 px-4 text-right align-top font-medium text-gray-900">{formatCurrency(item.amount + item.gstAmount)}</td>
+                                    <td className="py-4 px-4 text-right align-top font-medium text-gray-900">{formatCurrency(item.amount)}</td>
                                 </tr>
                             ))}
                             {items.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="py-8 text-center text-muted-foreground italic">No items added to invoice</td>
+                                    <td colSpan={4} className="py-8 text-center text-muted-foreground italic">No items added to invoice</td>
                                 </tr>
                             )}
                         </tbody>
@@ -113,17 +107,10 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
                             <span>Subtotal</span>
                             <span className="font-medium">{formatCurrency(subtotal)}</span>
                         </div>
-                        <div className="flex justify-between text-sm text-gray-600">
-                            <span>Total VAT (5%)</span>
-                            <span className="font-medium">{formatCurrency(tax)}</span>
-                        </div>
                         <div className="my-4 border-t border-gray-200"></div>
                         <div className="flex justify-between items-end">
                             <span className="text-base font-bold text-gray-900">Grand Total</span>
-                            <div className="text-right">
-                                <div className="text-2xl font-bold text-primary">{formatCurrency(total)}</div>
-                                <div className="text-xs text-muted-foreground mt-1">Including all taxes</div>
-                            </div>
+                            <div className="text-2xl font-bold text-primary">{formatCurrency(total)}</div>
                         </div>
                     </div>
                 </div>

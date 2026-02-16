@@ -7,7 +7,6 @@ import { formatCurrency } from "@/lib/utils";
 import { Plus, Minus } from "lucide-react";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 
 interface ProductCardProps {
     product: Product;
@@ -53,14 +52,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
             )}
             <CardHeader className="p-3 pb-1">
-                <div className="flex justify-between items-start gap-2">
-                    <CardTitle className="text-sm font-medium leading-tight line-clamp-2 min-h-[2.5rem]">
-                        {product.name}
-                    </CardTitle>
-                    <Badge variant="secondary" className="text-[10px] px-1.5 h-5 shrink-0">
-                        {product.gstRate}% VAT
-                    </Badge>
-                </div>
+                <CardTitle className="text-sm font-medium leading-tight line-clamp-2 min-h-[2.5rem]">
+                    {product.name}
+                </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 flex-grow flex flex-col justify-end">
                 <div className="text-xs text-muted-foreground mb-1">{product.category}</div>

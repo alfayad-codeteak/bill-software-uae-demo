@@ -8,6 +8,6 @@ export const PRODUCTS: Product[] = menuData.map((item, index) => ({
     category: item.category,
     price: item.price,
     unit: "Nos", // Default unit for menu items
-    gstRate: 5, // Default GST for food items (usually 5% in many regions, configurable)
+    gstRate: 0,
     image: item.image
 }));
