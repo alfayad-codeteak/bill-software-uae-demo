@@ -86,9 +86,9 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
                             {items.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="py-4 px-4 align-top font-medium text-gray-900">{item.name}</td>
-                                    <td className="py-4 px-4 text-right align-top text-gray-600">{formatCurrency(item.rate)}</td>
+                                    <td className="py-4 px-4 text-right align-top font-bold text-black">{formatCurrency(item.rate)}</td>
                                     <td className="py-4 px-4 text-right align-top text-gray-600">{item.qty} {item.unit}</td>
-                                    <td className="py-4 px-4 text-right align-top font-medium text-gray-900">{formatCurrency(item.amount)}</td>
+                                    <td className="py-4 px-4 text-right align-top font-bold text-black">{formatCurrency(item.amount)}</td>
                                 </tr>
                             ))}
                             {items.length === 0 && (
@@ -105,12 +105,12 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
                     <div className="w-full sm:w-5/12 space-y-3">
                         <div className="flex justify-between text-sm text-gray-600">
                             <span>Subtotal</span>
-                            <span className="font-medium">{formatCurrency(subtotal)}</span>
+                            <span className="font-bold text-black">{formatCurrency(subtotal)}</span>
                         </div>
                         <div className="my-4 border-t border-gray-200"></div>
                         <div className="flex justify-between items-end">
                             <span className="text-base font-bold text-gray-900">Grand Total</span>
-                            <div className="text-2xl font-bold text-primary">{formatCurrency(total)}</div>
+                            <div className="text-2xl font-bold text-black">{formatCurrency(total)}</div>
                         </div>
                     </div>
                 </div>

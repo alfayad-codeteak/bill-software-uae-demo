@@ -69,7 +69,7 @@ export function ProductSearch() {
                                         <span>{product.name}</span>
                                         <span className="text-xs text-muted-foreground">{product.category}</span>
                                     </div>
-                                    <span className="text-sm font-medium">{formatCurrency(product.price)}</span>
+                                    <span className="text-sm font-bold text-black">{formatCurrency(product.price)}</span>
                                 </div>
                             </CommandItem>
                         ))}

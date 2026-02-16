@@ -85,7 +85,7 @@ export function ReceiptPreview() {
                                 <div key={item.id} className="text-sm">
                                     <div className="flex justify-between font-medium text-gray-900">
                                         <span className="flex-1 pr-2">{item.name}</span>
-                                        <span>{formatCurrency(item.amount)}</span>
+                                        <span className="font-bold text-black">{formatCurrency(item.amount)}</span>
                                     </div>
                                     <div className="text-xs text-gray-500 mt-0.5">
                                         {item.qty} {item.unit} x {formatCurrency(item.rate)}
@@ -99,11 +99,11 @@ export function ReceiptPreview() {
                     <div className="border-t border-dashed border-gray-200 pt-4 space-y-2">
                         <div className="flex justify-between text-sm text-gray-600">
                             <span>Subtotal</span>
-                            <span>{formatCurrency(subtotal)}</span>
+                            <span className="font-bold text-black">{formatCurrency(subtotal)}</span>
                         </div>
                         <div className="flex justify-between text-lg font-bold text-gray-900 border-t border-gray-900 pt-3 mt-2">
                             <span>TOTAL</span>
-                            <span>{formatCurrency(total)}</span>
+                            <span className="font-bold text-black">{formatCurrency(total)}</span>
                         </div>
                     </div>
 

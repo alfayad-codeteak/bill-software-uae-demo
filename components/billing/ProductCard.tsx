@@ -58,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </CardHeader>
             <CardContent className="p-3 pt-0 flex-grow flex flex-col justify-end">
                 <div className="text-xs text-muted-foreground mb-1">{product.category}</div>
-                <div className="text-lg font-bold text-primary">
+                <div className="text-lg font-bold text-black">
                     {formatCurrency(product.price)}
                     <span className="text-xs font-normal text-muted-foreground ml-1">
                         / {product.unit}

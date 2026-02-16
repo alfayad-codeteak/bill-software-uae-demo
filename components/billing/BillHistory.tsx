@@ -70,7 +70,7 @@ export function BillHistory({ onOpenBill, onEditBill, onSendToYaadro }: BillHist
                                 <p className="text-sm text-muted-foreground mt-0.5">#{bill.invoiceNumber}</p>
                             </div>
                             <div className="text-right shrink-0">
-                                <p className="font-semibold text-primary text-base">{formatCurrency(bill.total)}</p>
+                                <p className="font-bold text-black text-base">{formatCurrency(bill.total)}</p>
                                 <p className="text-xs text-muted-foreground mt-0.5">
                                     {format(new Date(bill.date), "dd MMM yyyy")}
                                 </p>

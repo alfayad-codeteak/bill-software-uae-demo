@@ -37,7 +37,7 @@ export function InvoiceTable() {
             accessorKey: "rate",
             header: "Rate",
             cell: ({ row }) => (
-                <div className="text-right">{formatCurrency(row.original.rate)}</div>
+                <div className="text-right font-bold text-black">{formatCurrency(row.original.rate)}</div>
             ),
         },
         {
@@ -63,7 +63,7 @@ export function InvoiceTable() {
             accessorKey: "amount",
             header: "Amount",
             cell: ({ row }) => (
-                <div className="text-right font-semibold">
+                <div className="text-right font-bold text-black">
                     {formatCurrency(row.original.amount)}
                 </div>
             ),

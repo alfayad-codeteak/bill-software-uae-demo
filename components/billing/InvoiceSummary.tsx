@@ -18,12 +18,12 @@ export function InvoiceSummary() {
             <CardContent className="p-4 sm:p-6 space-y-3">
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>{formatCurrency(subtotal)}</span>
+                    <span className="font-bold text-black">{formatCurrency(subtotal)}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between items-end">
                     <span className="font-semibold text-lg">Grand Total</span>
-                    <span className="font-bold text-xl text-primary">{formatCurrency(total)}</span>
+                    <span className="font-bold text-xl text-black">{formatCurrency(total)}</span>
                 </div>
             </CardContent>
         </Card>

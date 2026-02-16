@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
         width: 100,
         textAlign: "right",
         fontWeight: "bold",
-        color: "#1a1a1a",
+        color: "#000000",
     },
     grandTotal: {
         fontSize: 14,
@@ -174,9 +174,9 @@ export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcod
                     <View key={item.id} style={styles.row}>
                         <Text style={[styles.cell, styles.col1]}>{index + 1}</Text>
                         <Text style={[styles.cell, styles.col2]}>{item.name}</Text>
-                        <Text style={[styles.cell, styles.col3]}>{item.rate.toFixed(2)}</Text>
+                        <Text style={[styles.cell, styles.col3, { fontWeight: 'bold', color: '#000000' }]}>{item.rate.toFixed(2)}</Text>
                         <Text style={[styles.cell, styles.col4]}>{item.qty} {item.unit}</Text>
-                        <Text style={[styles.cell, styles.col5]}>{item.amount.toFixed(2)}</Text>
+                        <Text style={[styles.cell, styles.col5, { fontWeight: 'bold', color: '#000000' }]}>{item.amount.toFixed(2)}</Text>
                     </View>
                 ))}
 
