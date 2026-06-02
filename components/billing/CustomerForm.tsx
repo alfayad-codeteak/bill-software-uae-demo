@@ -11,28 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect } from "react";
 import { X } from "lucide-react";
 
-/** UAE mobile: exactly 9 digits, starting with 5 (e.g. 501234567). Used for Yaadro. */
-export const UAE_PHONE_REGEX = /^5\d{8}$/;
-export function normalizeUaePhone(value: string): string {
-    const digits = (value || "").replace(/\D/g, "");
-    return digits;
-}
-export function isValidUaePhone(value: string): boolean {
-    if (!value || typeof value !== "string") return false;
-    const digits = normalizeUaePhone(value);
-    return digits.length === 9 && UAE_PHONE_REGEX.test(digits);
-}
+import { isValidIndianMobile } from "@/lib/validation";
 
 const customerSchema = z.object({
     name: z.string().min(2, "Name is required"),
     email: z.string().email("Invalid email").optional().or(z.literal('')),
     phone: z
         .string()
-        .optional()
-        .or(z.literal(''))
+        .min(1, "Phone is required")
         .refine(
-            (val) => !val || isValidUaePhone(val),
-            { message: "Must be 9-digit UAE mobile starting with 5 (e.g. 501234567)" }
+            (val) => isValidIndianMobile(val),
+            { message: "Enter a valid Indian mobile (10 digits, starts 6–9; accepts +91/0 prefix)" }
         ),
     address: z.string().optional(),
 });
@@ -40,7 +29,7 @@ const customerSchema = z.object({
 type CustomerFormValues = z.infer<typeof customerSchema>;
 
 export function CustomerForm() {
-    const { customer, setCustomer } = useInvoiceStore();
+    const { customer, setCustomer, customerErrors, clearCustomerErrors } = useInvoiceStore();
 
     const form = useForm<CustomerFormValues>({
         resolver: zodResolver(customerSchema),
@@ -72,17 +61,34 @@ export function CustomerForm() {
     // Sync form with store on change
     useEffect(() => {
         const subscription = form.watch((value) => {
+            // make errors feel "live" as soon as user types anywhere
+            clearCustomerErrors();
             setCustomer(value as Partial<CustomerFormValues>);
         });
         return () => subscription.unsubscribe();
     }, [form.watch, setCustomer]);
 
-    // Live validation for phone (Yaadro): re-validate when phone changes
+    // Live validation for phone: re-validate when phone changes
     useEffect(() => {
         if (phoneValue !== undefined && phoneValue !== "") {
             form.trigger("phone");
         }
     }, [phoneValue]);
+
+    // If global customerErrors were set (e.g. Print Bill validation), reflect them into RHF UI
+    useEffect(() => {
+        if (!customerErrors) return;
+        const map: Partial<Record<keyof CustomerFormValues, string>> = {
+            name: customerErrors.name,
+            phone: customerErrors.phone,
+            email: customerErrors.email,
+            address: customerErrors.address,
+        };
+        (Object.keys(map) as (keyof CustomerFormValues)[]).forEach((key) => {
+            const msg = map[key];
+            if (msg) form.setError(key, { type: "manual", message: msg });
+        });
+    }, [customerErrors]);
 
     return (
         <div className="space-y-5">
@@ -91,7 +97,7 @@ export function CustomerForm() {
                 <Input
                     id="name"
                     placeholder="Business or Person Name"
-                    {...form.register("name")}
+                    {...form.register("name", { onChange: () => clearCustomerErrors() })}
                     className={form.formState.errors.name ? "border-red-500" : ""}
                 />
                 {form.formState.errors.name && (
@@ -100,17 +106,15 @@ export function CustomerForm() {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="phone">Phone (required for Yaadro)</Label>
+                <Label htmlFor="phone">Phone *</Label>
                 <Input
                     id="phone"
-                    placeholder="501234567 (UAE 9 digits)"
-                    {...form.register("phone")}
+                    placeholder="10-digit mobile (accepts +91 or leading 0)"
+                    {...form.register("phone", { onChange: () => clearCustomerErrors() })}
                     className={form.formState.errors.phone ? "border-red-500" : ""}
                 />
-                {form.formState.errors.phone ? (
+                {form.formState.errors.phone && (
                     <p className="text-xs text-red-500">{form.formState.errors.phone.message}</p>
-                ) : (
-                    <p className="text-xs text-muted-foreground">UAE mobile: 9 digits starting with 5</p>
                 )}
             </div>
 
@@ -138,7 +142,7 @@ export function CustomerForm() {
                 <Input
                     id="address"
                     placeholder="Street, City, State, Zip"
-                    {...form.register("address")}
+                    {...form.register("address", { onChange: () => clearCustomerErrors() })}
                     className={form.formState.errors.address ? "border-red-500" : ""}
                 />
                 {form.formState.errors.address && (

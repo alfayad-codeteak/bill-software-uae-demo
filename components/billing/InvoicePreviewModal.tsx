@@ -12,6 +12,7 @@ import { Download, Eye } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { validateCustomerForPrint } from "@/lib/validation";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReceiptPreview } from "./ReceiptPreview";
@@ -22,7 +23,7 @@ import { InvoiceTemplate } from "./InvoiceTemplate";
 const generateInvoiceId = () => `INV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
 export function InvoicePreviewModal() {
-    const { customer, items, getSubtotal, getTotalTax, getGrandTotal, viewMode, setViewMode, resetInvoice, invoiceNumber, date } = useInvoiceStore();
+    const { customer, items, getSubtotal, getTotalTax, getGrandTotal, viewMode, setViewMode, resetInvoice, invoiceNumber, date, setCustomerErrors } = useInvoiceStore();
     const { saveBill } = useBillsStore();
     const [internalOpen, setInternalOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
@@ -64,6 +65,14 @@ export function InvoicePreviewModal() {
             toast.error("Add items before previewing");
             return;
         }
+
+        const customerValidation = validateCustomerForPrint(customer);
+        if (!customerValidation.valid) {
+            setCustomerErrors(customerValidation.errors);
+            toast.error("Please fill required customer fields");
+            return;
+        }
+
         const bill = getCurrentBill();
         await saveBill(bill);
         const yaadroResult = await sendOrderToYaadro(bill);
@@ -73,7 +82,15 @@ export function InvoicePreviewModal() {
         setInternalOpen(true);
     };
 
-    const handleDownloadPdf = async () => {
+    const handleDownloadPdf = async (e?: React.MouseEvent) => {
+        const customerValidation = validateCustomerForPrint(customer);
+        if (!customerValidation.valid) {
+            e?.preventDefault();
+            e?.stopPropagation();
+            setCustomerErrors(customerValidation.errors);
+            toast.error("Please fill required customer fields");
+            return;
+        }
         const bill = getCurrentBill();
         const result = await sendOrderToYaadro(bill);
         if (result.ok) toast.success("Order sent to Yaadro");

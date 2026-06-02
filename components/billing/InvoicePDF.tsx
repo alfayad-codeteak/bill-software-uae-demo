@@ -184,7 +184,7 @@ export const InvoicePDF = ({ customer, items, invoiceId, date, qrCodeUrl, barcod
                 <View style={styles.totalSection}>
                     <View style={[styles.totalRow, styles.grandTotal]}>
                         <Text style={[styles.totalLabel, { color: 'black', fontWeight: 'bold' }]}>Grand Total:</Text>
-                        <Text style={styles.totalValue}>AED {grandTotal.toFixed(2)}</Text>
+                        <Text style={styles.totalValue}>{formatCurrency(grandTotal)}</Text>
                     </View>
                 </View>
 

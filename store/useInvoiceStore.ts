@@ -3,6 +3,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 import { Bill, Customer, InvoiceItem, Product, InvoiceState } from '@/lib/types';
 
+export type CustomerErrors = Partial<Record<keyof Pick<Customer, "name" | "phone" | "gstin" | "address" | "email" | "placeOfSupply">, string>>;
+
 // Use crypto.randomUUID if available, else a simplefallback
 const generateId = () => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -13,6 +15,9 @@ const generateId = () => {
 
 interface InvoiceStore extends InvoiceState {
     setCustomer: (customer: Partial<Customer>) => void;
+    customerErrors: CustomerErrors;
+    setCustomerErrors: (errors: CustomerErrors) => void;
+    clearCustomerErrors: () => void;
     addItem: (product: Product) => void;
     removeItem: (itemId: string) => void;
     updateQty: (itemId: string, qty: number) => void;
@@ -42,15 +47,28 @@ export const useInvoiceStore = create<InvoiceStore>()(
                 phone: '',
                 address: '',
             },
+            customerErrors: {},
             items: [],
             invoiceNumber: '', // Will be set on hydration or component mount if empty
             date: new Date(),
 
             viewMode: false,
 
-            setCustomer: (customer) => set((state) => ({
-                customer: { ...state.customer, ...customer }
-            })),
+            setCustomer: (customer) =>
+                set((state) => {
+                    const nextErrors: CustomerErrors = { ...state.customerErrors };
+                    for (const key of Object.keys(customer) as (keyof Customer)[]) {
+                        // When user edits a field, drop that field's error
+                        delete (nextErrors as Record<string, string | undefined>)[key as string];
+                    }
+                    return {
+                        customer: { ...state.customer, ...customer },
+                        customerErrors: nextErrors,
+                    };
+                }),
+
+            setCustomerErrors: (errors) => set({ customerErrors: errors }),
+            clearCustomerErrors: () => set({ customerErrors: {} }),
 
             addItem: (product) => set((state) => {
                 const existingItem = state.items.find((i) => i.productId === product.id);
@@ -95,6 +113,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
 
             resetInvoice: () => set({
                 customer: { name: '', email: '', phone: '', address: '' },
+                customerErrors: {},
                 items: [],
                 invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
                 date: new Date(),

@@ -12,7 +12,7 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { db } from "@/lib/db";
 import type { Bill } from "@/lib/types";
 import { parseBillFromShareUrl } from "@/lib/utils";
-import { validateYaadroCustomer, sendOrderToYaadro } from "@/lib/yaadro";
+import { sendOrderToYaadro } from "@/lib/yaadro";
 import { SharedBillNotFound } from "@/components/billing/SharedBillNotFound";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -185,11 +185,6 @@ function HomeContent() {
     const name = (customer.name || "").trim();
     if (name.length < 2) {
       toast.error("Customer name is required (at least 2 characters)");
-      return;
-    }
-    const phoneValidation = validateYaadroCustomer(customer);
-    if (!phoneValidation.valid) {
-      toast.error(phoneValidation.error ?? "Valid UAE phone is required");
       return;
     }
 

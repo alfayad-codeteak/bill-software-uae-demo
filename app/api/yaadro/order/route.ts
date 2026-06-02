@@ -1,32 +1,18 @@
 import { NextResponse } from "next/server";
 import type { Bill } from "@/lib/types";
+import { normalizeIndianPhone } from "@/lib/validation";
 
-const YAADRO_BASE = "https://api.yaadro.ae/api/orders/create/public";
-
-/** Normalize to 9-digit UAE mobile (digits only, must start with 5) for Yaadro. */
-function normalizeUaePhone(value: string): string {
-  const digits = (value || "").replace(/\D/g, "");
-  if (digits.length === 9 && /^5\d{8}$/.test(digits)) return digits;
-  return (value || "").trim();
-}
-
-function buildYaadroPayload(bill: Bill) {
+function buildYaadroPayload(bill: Bill, shopId: string) {
   const rawPhone = bill.customer.phone || "";
-  const customer_phone_number = normalizeUaePhone(rawPhone) || rawPhone;
+  const customer_phone_number = normalizeIndianPhone(rawPhone) || rawPhone;
+
   return {
-    customer_name: bill.customer.name || "Walk-in Customer",
+    shop_id: shopId,
+    bill_no: bill.invoiceNumber,
+    customer_name: (bill.customer.name || "").trim(),
     customer_phone_number,
     address: bill.customer.address || "",
     total_amount: Number(bill.total),
-    bill_no: bill.invoiceNumber,
-    urgency: "Normal",
-    payment_mode: "cash",
-    special_instructions: "",
-    vat: Number(bill.tax),
-    tip: 0,
-    delivery_charge: 0,
-    water: false,
-    water_count: 0,
     items: bill.items.map((item) => ({
       item_name: item.name,
       quantity: item.qty,
@@ -34,16 +20,25 @@ function buildYaadroPayload(bill: Bill) {
       totalamount: Number(item.amount),
       vat: Number(item.gstAmount),
     })),
+    // Optional/defaults (backend accepts these if provided)
+    urgency: "Normal",
+    payment_mode: "cash",
   };
 }
 
 export async function POST(request: Request) {
   const shopId = process.env.YAADRO_SHOP_ID;
-  const token = process.env.YAADRO_INTEGRATION_TOKEN;
+  const apiKey = process.env.YAADRO_ADMIN_API_KEY;
+  const pythonBaseUrl = (
+    process.env.YAADRO_PYTHON_BASE_URL ||
+    process.env.DEFAULT_BASE_URL ||
+    "https://shop-api.yaadro.online"
+  ).replace(/\/+$/, "");
+  const endpointPath = process.env.PYTHON_ENDPOINT_PATH || "/api/orders/create";
 
-  if (!shopId || !token) {
+  if (!shopId || !apiKey) {
     return NextResponse.json(
-      { error: "Yaadro not configured (YAADRO_SHOP_ID / YAADRO_INTEGRATION_TOKEN)" },
+      { error: "Yaadro not configured (YAADRO_SHOP_ID / YAADRO_ADMIN_API_KEY)" },
       { status: 503 }
     );
   }
@@ -60,11 +55,16 @@ export async function POST(request: Request) {
       total: Number(body.total),
     };
 
-    const payload = buildYaadroPayload(bill);
-    const url = `${YAADRO_BASE}/${encodeURIComponent(shopId)}:${encodeURIComponent(token)}`;
+    const payload = buildYaadroPayload(bill, shopId);
+    const url = `${pythonBaseUrl}${endpointPath.startsWith("/") ? "" : "/"}${endpointPath}`;
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": apiKey,
+        // recommended by backend to relax some security checks
+        "User-Agent": "python-requests/2.31.0",
+      },
       body: JSON.stringify(payload),
     });
 
