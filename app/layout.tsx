@@ -11,34 +11,34 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://billsoftwareuae.verc
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Easy Billing UAE | Invoice & Bill Software",
-    template: "%s | Easy Billing UAE",
+    default: "Easy Billing India | Invoice & Bill Software",
+    template: "%s | Easy Billing India",
   },
   description:
-    "Create and manage invoices and bills in the UAE. Save bills, share via link or QR, send to Yaadro, and download PDF.",
-  keywords: ["billing", "invoice", "UAE", "bill software", "Yaadro", "PDF", "QR"],
-  authors: [{ name: "Easy Billing UAE" }],
-  creator: "Easy Billing UAE",
+    "Create and manage invoices and bills in India. Save bills, share via link or QR, send orders, and download PDF.",
+  keywords: ["billing", "invoice", "India", "bill software", "Yaadro", "PDF", "QR", "INR"],
+  authors: [{ name: "Easy Billing India" }],
+  creator: "Easy Billing India",
   openGraph: {
     type: "website",
-    locale: "en_AE",
+    locale: "en_IN",
     url: baseUrl,
-    siteName: "Easy Billing UAE",
-    title: "Easy Billing UAE | Invoice & Bill Software",
-    description: "Create and manage invoices and bills in the UAE. Save bills, share via link or QR, send to Yaadro, and download PDF.",
+    siteName: "Easy Billing India",
+    title: "Easy Billing India | Invoice & Bill Software",
+    description: "Create and manage invoices and bills in India. Save bills, share via link or QR, send orders, and download PDF.",
     images: [
       {
         url: "/easybilling.jpg",
         width: 1200,
         height: 630,
-        alt: "Easy Billing UAE",
+        alt: "Easy Billing India",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Easy Billing UAE | Invoice & Bill Software",
-    description: "Create and manage invoices and bills in the UAE. Save bills, share via link or QR, send to Yaadro, and download PDF.",
+    title: "Easy Billing India | Invoice & Bill Software",
+    description: "Create and manage invoices and bills in India. Save bills, share via link or QR, send orders, and download PDF.",
     images: ["/easybilling.jpg"],
   },
   robots: {

@@ -32,11 +32,11 @@ export function InvoiceTemplate({ invoiceId, date }: InvoiceTemplateProps) {
                 </div>
                 <div className="flex gap-4 sm:gap-8 items-start flex-wrap">
                     <div className="text-right">
-                        <div className="font-bold text-xl text-foreground">Bill Software UAE</div>
+                        <div className="font-bold text-xl text-foreground">Bill Software India</div>
                         <p className="text-sm text-muted-foreground mt-1">
-                            123 Business Bay<br />
-                            Dubai, UAE<br />
-                            support@billsoftware.ae
+                            123 Business Park<br />
+                            Bengaluru, India<br />
+                            support@billsoftware.in
                         </p>
                     </div>
                     <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-100">
